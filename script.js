@@ -25,31 +25,51 @@ function goToTable() {
 function submitBooking(event) {
   event.preventDefault();
 
-  const table = document.getElementById("tableNumber").value;
-  const people = document.getElementById("people").value;
-  const date = document.getElementById("date").value;
-  const time = document.getElementById("time").value;
-
+  const form = event.target;
+  const tableInput = document.getElementById("tableNumber");
+  const peopleInput = document.getElementById("people");
+  const dateInput = document.getElementById("date");
+  const timeInput = document.getElementById("time");
   const result = document.getElementById("bookingResult");
 
-  if (!table) {
+  // ตรวจสอบข้อมูล
+  if (!tableInput.value || !peopleInput.value) {
     result.style.color = "red";
-    result.textContent = "กรุณาเลือกโต๊ะจากแผนผัง";
-  return;
-}
+    result.textContent = "กรุณาเลือกโต๊ะและจำนวนคน";
+    return;
+  }
 
-  // แสดงผลลัพธ์การจอง
+  // แสดงผลลัพธ์ (อย่า reset ก่อน)
   result.style.color = "#98ff98";
-  result.textContent =
-    `🎉 การจองสำเร็จ!  
-โต๊ะ: ${table}  
-จำนวนคน: ${people}  
-วันที่: ${date}  
-เวลา: ${time}`;
+  result.innerHTML = `
+    🎉 การจองสำเร็จ!<br>
+    โต๊ะ: ${tableInput.value}<br>
+    จำนวนคน: ${peopleInput.value}<br>
+    วันที่: ${dateInput.value}<br>
+    เวลา: ${timeInput.value}
+  `;
 
-  // Reset form
-  event.target.reset();
+  /* =========================
+     RESET STATE
+  ========================= */
+
+  // ล้างการเลือกโต๊ะ
+  document.querySelectorAll(".table").forEach(t =>
+    t.classList.remove("selected")
+  );
+
+  // ล้างค่า hidden input
+  tableInput.value = "";
+
+  // รีเซ็ตฟอร์ม (หลังแสดงผล)
+  form.reset();
+
+  // กลับไป STEP 1
+  document.getElementById("stepTable").style.display = "none";
+  document.getElementById("stepDate").style.display = "block";
 }
+
+
 
 /* ============================
    Smooth Scrolling (Optional)
@@ -98,4 +118,18 @@ document.addEventListener("DOMContentLoaded", () => {
       tableInput.value = table.dataset.table;
     });
   });
+  document.addEventListener("DOMContentLoaded", () => {
+  const tables = document.querySelectorAll(".table");
+  const tableInput = document.getElementById("tableNumber");
+
+  tables.forEach(table => {
+    table.addEventListener("click", () => {
+      if (table.classList.contains("unavailable")) return;
+
+      tables.forEach(t => t.classList.remove("selected"));
+      table.classList.add("selected");
+      tableInput.value = table.dataset.table;
+    });
+  });
+});
 });

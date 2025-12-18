@@ -1,5 +1,5 @@
 /* =====================
-   GLOBAL STYLE
+   GLOBAL
 ===================== */
 * {
   margin: 0;
@@ -9,7 +9,7 @@
 }
 
 body {
-  background-color: #111;
+  background: #111;
   color: #fff;
   line-height: 1.7;
 }
@@ -29,11 +29,11 @@ section {
    NAVBAR
 ===================== */
 header {
-  background: rgba(0, 0, 0, 0.8);
   position: fixed;
-  width: 100%;
   top: 0;
+  width: 100%;
   z-index: 20;
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(5px);
 }
 
@@ -55,21 +55,13 @@ header {
 .nav-menu {
   display: flex;
   gap: 25px;
-}
-
-.nav-menu li {
   list-style: none;
-}
-
-.nav-menu a {
-  transition: 0.3s;
 }
 
 .nav-menu a:hover {
   color: #f0c56a;
 }
 
-/* Hamburger (mobile) */
 .hamburger {
   display: none;
   font-size: 28px;
@@ -77,75 +69,7 @@ header {
 }
 
 /* =====================
-   HERO SECTION
-===================== */
-.hero {
-  background: url('hero.jpg') center/cover no-repeat;
-  text-align: center;
-  padding: 200px 20px;
-  background-attachment: fixed;
-}
-
-.hero h1 {
-  font-size: 42px;
-  margin-bottom: 15px;
-}
-
-.hero p {
-  font-size: 18px;
-  margin-bottom: 25px;
-  opacity: 0.8;
-}
-
-.btn-booking {
-  background: #f0c56a;
-  padding: 12px 25px;
-  border-radius: 6px;
-  color: #111;
-  font-weight: 600;
-  transition: 0.3s;
-}
-
-.btn-booking:hover {
-  background: #ffdb8a;
-}
-
-/* =====================
-   MENU GRID
-===================== */
-.menu .grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.card {
-  background: #1a1a1a;
-  padding: 25px;
-  text-align: center;
-  border-radius: 10px;
-  font-size: 18px;
-  border: 1px solid #333;
-  transition: 0.3s;
-}
-
-.card:hover {
-  border-color: #f0c56a;
-  transform: translateY(-5px);
-}
-
-/* =====================
-   ABOUT
-===================== */
-.about p {
-  max-width: 700px;
-  margin: auto;
-  font-size: 18px;
-  opacity: 0.9;
-}
-
-/* =====================
-   BOOKING PAGE
+   BOOKING FORM
 ===================== */
 .booking-form {
   display: flex;
@@ -172,7 +96,6 @@ header {
   font-weight: 700;
   color: #111;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .booking-form button:hover {
@@ -187,116 +110,144 @@ header {
 }
 
 /* =====================
-   FLOAT BUTTON
+   FLOOR MAP (DESKTOP)
 ===================== */
-.floating-btn {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  background: #f0c56a;
-  padding: 15px 20px;
-  border-radius: 50px;
-  color: #111;
-  font-weight: 700;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
-  transition: 0.3s;
-}
-
-.floating-btn:hover {
-  background: #ffdb8a;
+.floor-map {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 40px;
+  margin: 40px auto;
+  max-width: 750px;
 }
 
 /* =====================
-   FOOTER
+   ZONE
 ===================== */
-footer {
-  text-align: center;
-  padding: 30px 10px;
-  margin-top: 60px;
-  border-top: 1px solid #333;
-  opacity: 0.7;
+.zone {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* TOP (ST) */
+.zone.top {
+  grid-column: 1 / 3;
+  grid-row: 1;
+}
+
+/* TOP RIGHT (TABLE 5) */
+.zone.top-right {
+  grid-column: 3;
+  grid-row: 1;
+  align-items: flex-start; /* ทำให้สูงกว่า right */
+}
+
+/* LEFT (B1–B3) */
+.zone.left {
+  grid-column: 1;
+  grid-row: 2;
+  flex-direction: column;
+}
+
+/* CENTER (9 6 / 8 7) */
+.zone.center {
+  grid-column: 2;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: repeat(2, 70px);
+  gap: 15px;
+}
+
+/* RIGHT (4 2 / 3 1) */
+.zone.right {
+  grid-column: 3;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: repeat(2, 70px);
+  gap: 15px;
+}
+
+/* BOTTOM (14 15) */
+.zone.bottom {
+  grid-column: 2;
+  grid-row: 3;
 }
 
 /* =====================
-   RESPONSIVE
+   TABLE
 ===================== */
-@media (max-width: 992px) {
-  .menu .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.table {
+  width: 70px;
+  height: 70px;
+  background: #2ecc71;
+  color: #000;
+  font-weight: bold;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: 0.2s;
 }
 
+.circle {
+  border-radius: 50%;
+}
+
+.table:hover {
+  opacity: 0.85;
+}
+
+.table.selected {
+  background: #98ff98;
+  border-color: #000;
+}
+
+.table.unavailable {
+  background: #e67e22;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =====================
+   RESPONSIVE (MOBILE)
+===================== */
 @media (max-width: 768px) {
   .hamburger {
     display: block;
   }
 
   .nav-menu {
+    display: none;
     position: absolute;
     top: 70px;
     right: 0;
     background: #000;
     flex-direction: column;
     width: 200px;
-    display: none;
     padding: 20px;
   }
 
   .nav-menu.active {
     display: flex;
   }
-}
 
-@media (max-width: 600px) {
-  .hero h1 {
-    font-size: 32px;
-  }
-
-  .menu .grid {
+  .floor-map {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
   }
-}
 
-.fade-in {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-}
+  .zone {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
 
-section, .card {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: 0.8s ease-in-out;
-}
-
-.table-map {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin: 20px 0;
-}
-
-.table {
-  padding: 20px;
-  background: #2c2c2c;
-  color: #fff;
-  text-align: center;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.3s;
-  border: 2px solid transparent;
-}
-
-.table:hover {
-  background: #3a3a3a;
-}
-
-.table.selected {
-  border-color: #98ff98;
-  background: #1f3d2b;
-}
-
-.table.unavailable {
-  background: #555;
-  opacity: 0.5;
-  cursor: not-allowed;
+  .zone.center,
+  .zone.right {
+    grid-template-columns: repeat(2, 70px);
+  }
 }

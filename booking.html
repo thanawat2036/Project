@@ -22,49 +22,77 @@
 </header>
 
 <section class="contact">
-  <h2>ติดต่อ / จองโต๊ะ</h2>
-  <p>LINE: @bourbon.yard</p>
-  <p>เปิดทุกวัน 17:00 – 00:00 น.</p>
-  <p>ที่อยู่: ห้าแยกหอนาฬิกา, เมืองลำปาง</p>
-
-  <h3>📌 จองโต๊ะออนไลน์</h3>
+  <h3>จองโต๊ะออนไลน์</h3>
 
   <form id="bookingForm" class="booking-form" onsubmit="submitBooking(event)">
 
-  <!-- STEP 1 -->
-  <div id="stepDate">
-    <label>วันที่:</label>
-    <input type="date" id="date" required />
+    <!-- STEP 1 : DATE / TIME -->
+    <div id="stepDate">
+      <label>วันที่</label>
+      <input type="date" id="date" required />
 
-    <label>เวลา:</label>
-    <input type="time" id="time" required />
+      <label>เวลา</label>
+      <input type="time" id="time" required />
 
-    <button type="button" onclick="goToTable()">ถัดไป</button>
-  </div>
+      <button type="button" onclick="goToTable()">ถัดไป</button>
+    </div>
 
-<!-- STEP 2 -->
-<div id="stepTable" style="display:none;">
+    <!-- STEP 2 : TABLE MAP -->
+    <div id="stepTable" style="display:none;">
+      <h4>เลือกโต๊ะจากแผนผังร้าน</h4>
 
-  <h4>เลือกโต๊ะจากแผนผังร้าน</h4>
+      <div class="floor-map">
 
-  <div class="table-map">
-    <div class="table" data-table="1">โต๊ะ 1</div>
-    <div class="table" data-table="2">โต๊ะ 2</div>
-    <div class="table" data-table="3">โต๊ะ 3</div>
-    <div class="table" data-table="4">โต๊ะ 4</div>
-    <div class="table" data-table="5">โต๊ะ 5</div>
-    <div class="table" data-table="6">โต๊ะ 6</div>
-  </div>
+        <!-- TOP -->
+        <div class="zone top">
+          <div class="table square" data-table="ST">ST</div>
+        </div>
 
-  <!-- เก็บค่าโต๊ะที่เลือก -->
-  <input type="hidden" id="tableNumber" required />
-    <label>จำนวนคน:</label>
-    <input type="number" id="people" min="1" max="12" required />
+        <!-- TOP RIGHT -->
+        <div class="zone top-right">
+          <div class="table square" data-table="5">5</div>
+        </div>
 
-    <button type="submit">ยืนยันการจอง</button>
-  </div>
-</form>
+        <!-- LEFT -->
+        <div class="zone left">
+          <div class="table circle" data-table="B1">B1</div>
+          <div class="table circle" data-table="B2">B2</div>
+          <div class="table circle" data-table="B3">B3</div>
+        </div>
 
+        <!-- CENTER -->
+        <div class="zone center">
+          <div class="table square" data-table="9">9</div>
+          <div class="table square" data-table="6">6</div>
+          <div class="table square" data-table="8">8</div>
+          <div class="table square" data-table="7">7</div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="zone right">
+          <div class="table square" data-table="4">4</div>
+          <div class="table square" data-table="2">2</div>
+          <div class="table square" data-table="3">3</div>
+          <div class="table square" data-table="1">1</div>
+        </div>
+
+        <!-- BOTTOM -->
+        <div class="zone bottom">
+          <div class="table square" data-table="14">14</div>
+          <div class="table square" data-table="15">15</div>
+        </div>
+
+      </div>
+
+      <input type="hidden" id="tableNumber" required />
+
+      <label>จำนวนคน</label>
+      <input type="number" id="people" min="1" max="12" required />
+
+      <button type="submit">ยืนยันการจอง</button>
+    </div>
+
+  </form>
 
   <p id="bookingResult" class="booking-success"></p>
 </section>
