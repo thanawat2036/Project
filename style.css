@@ -9,8 +9,8 @@
 }
 
 body {
-  background: #111;
-  color: #fff;
+  background: #faf4ee; /* cream */
+  color: #2b2b2b;      /* dark text */
   line-height: 1.7;
 }
 
@@ -25,6 +25,24 @@ section {
   margin: auto;
 }
 
+footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 30px 20px;
+  background: #faf4ee;
+  color: #2b2b2b;
+  border-top: 1px solid #e6ddd3;
+}
+
+footer p {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+}
+
 /* =====================
    NAVBAR
 ===================== */
@@ -33,7 +51,8 @@ header {
   top: 0;
   width: 100%;
   z-index: 20;
-  background: rgba(0, 0, 0, 0.8);
+  background: #faf4ee;
+  border-bottom: 1px solid #e6ddd3;
   backdrop-filter: blur(5px);
 }
 
@@ -49,7 +68,7 @@ header {
 .logo {
   font-size: 24px;
   font-weight: 700;
-  color: #f0c56a;
+  color: #2b2b2b;
 }
 
 .nav-menu {
@@ -58,14 +77,19 @@ header {
   list-style: none;
 }
 
+.nav-menu a {
+  color: #2b2b2b;
+}
+
 .nav-menu a:hover {
-  color: #f0c56a;
+  color: #e76f51; /* orange */
 }
 
 .hamburger {
   display: none;
   font-size: 28px;
   cursor: pointer;
+  color: #2b2b2b;
 }
 
 /* =====================
@@ -83,29 +107,30 @@ header {
 .booking-form select {
   padding: 12px;
   border-radius: 6px;
-  border: none;
-  background: #222;
-  color: #fff;
+  border: 1px solid #e0d6cc;
+  background: #ffffff;
+  color: #2b2b2b;
 }
 
 .booking-form button {
   padding: 12px;
-  background: #f0c56a;
+  background: #e9c46a; /* mustard */
   border: none;
-  border-radius: 6px;
+  border-radius: 999px;
   font-weight: 700;
   color: #111;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 .booking-form button:hover {
-  background: #ffdb8a;
+  background: #f4a261;
 }
 
 .booking-success {
   margin-top: 20px;
   text-align: center;
-  color: #98ff98;
+  color: #2a9d8f;
   font-size: 18px;
 }
 
@@ -141,7 +166,7 @@ header {
 .zone.top-right {
   grid-column: 3;
   grid-row: 1;
-  align-items: flex-start; /* ทำให้สูงกว่า right */
+  align-items: flex-start;
 }
 
 /* LEFT (B1–B3) */
@@ -181,8 +206,8 @@ header {
 .table {
   width: 70px;
   height: 70px;
-  background: #2ecc71;
-  color: #000;
+  background: #faf4ee; /* soft orange */
+  color: #111;
   font-weight: bold;
   font-size: 16px;
   display: flex;
@@ -190,7 +215,7 @@ header {
   justify-content: center;
   border-radius: 10px;
   cursor: pointer;
-  border: 3px solid transparent;
+  border: 2px solid #646262;
   transition: 0.2s;
 }
 
@@ -203,13 +228,14 @@ header {
 }
 
 .table.selected {
-  background: #98ff98;
-  border-color: #000;
+  background: #57c566;
+  border-color: #2b2b2b;
 }
 
 .table.unavailable {
-  background: #e67e22;
-  opacity: 0.5;
+  background: #d62828;
+  border-color: #b01e1e;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -226,10 +252,18 @@ header {
     position: absolute;
     top: 70px;
     right: 0;
-    background: #000;
+    background: #2b2b2b;
     flex-direction: column;
     width: 200px;
     padding: 20px;
+  }
+
+  .nav-menu a {
+    color: #ffffff;
+  }
+
+  .nav-menu a:hover {
+    color: #e9c46a;
   }
 
   .nav-menu.active {
