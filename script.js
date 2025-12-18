@@ -6,9 +6,22 @@ function toggleMenu() {
   menu.classList.toggle("active");
 }
 
-/* ============================
-   BOOKING FORM SUBMIT
-============================ */
+function goToTable() {
+  const date = document.getElementById("date").value;
+  const time = document.getElementById("time").value;
+  const result = document.getElementById("bookingResult");
+
+  if (!date || !time) {
+    result.style.color = "red";
+    result.textContent = "กรุณาเลือกวันที่และเวลาก่อน";
+    return;
+  }
+
+  document.getElementById("stepDate").style.display = "none";
+  document.getElementById("stepTable").style.display = "block";
+  result.textContent = "";
+}
+
 function submitBooking(event) {
   event.preventDefault();
 
@@ -19,11 +32,11 @@ function submitBooking(event) {
 
   const result = document.getElementById("bookingResult");
 
-  if (!table || !people || !date || !time) {
+  if (!table) {
     result.style.color = "red";
-    result.textContent = "กรุณากรอกข้อมูลให้ครบถ้วน";
-    return;
-  }
+    result.textContent = "กรุณาเลือกโต๊ะจากแผนผัง";
+  return;
+}
 
   // แสดงผลลัพธ์การจอง
   result.style.color = "#98ff98";
@@ -67,4 +80,22 @@ function handleScroll() {
 
 window.addEventListener("scroll", handleScroll);
 handleScroll(); // initial check
-  
+
+/* ============================
+   TABLE MAP SELECTION
+============================ */
+document.addEventListener("DOMContentLoaded", () => {
+  const tables = document.querySelectorAll(".table");
+  const tableInput = document.getElementById("tableNumber");
+
+  tables.forEach(table => {
+    table.addEventListener("click", () => {
+      if (table.classList.contains("unavailable")) return;
+
+      tables.forEach(t => t.classList.remove("selected"));
+      table.classList.add("selected");
+
+      tableInput.value = table.dataset.table;
+    });
+  });
+});

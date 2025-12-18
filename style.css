@@ -267,3 +267,36 @@ section, .card {
   transform: translateY(20px);
   transition: 0.8s ease-in-out;
 }
+
+.table-map {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.table {
+  padding: 20px;
+  background: #2c2c2c;
+  color: #fff;
+  text-align: center;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  border: 2px solid transparent;
+}
+
+.table:hover {
+  background: #3a3a3a;
+}
+
+.table.selected {
+  border-color: #98ff98;
+  background: #1f3d2b;
+}
+
+.table.unavailable {
+  background: #555;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
