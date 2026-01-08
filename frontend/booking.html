@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book a Table | Bourbon.Yard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="nav">
+    <h1 class="logo">Bourbon.Yard</h1>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="#">Wine</a>
+      <a href="#">About</a>
+      <a href="booking.html" class="btn-outline">Book Table</a>
+    </nav>
+  </div>
+</header>
+
+<section class="booking">
+  <div class="booking-card">
+
+    <h2>Reserve Your Table</h2>
+
+    <!-- ✅ FORM -->
+    <form id="bookingForm">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>วันที่</label>
+          <input type="date" id="date" required>
+        </div>
+
+        <div class="form-group">
+          <label>เวลา</label>
+          <input type="time" id="time" min="17:00" max="23:00" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>จำนวนลูกค้า</label>
+        <input type="number" id="people" min="1" max="10" required>
+      </div>
+
+      <!-- ✅ HIDDEN TABLE -->
+      <input type="hidden" id="tableNumber">
+
+      <!-- INDOOR -->
+      <div class="zone">
+        <h4 class="zone-title">🍷 Indoor Zone</h4>
+        <div class="table-grid indoor">
+          <div class="table">1</div>
+          <div class="table">2</div>
+          <div class="table">3</div>
+          <div class="table">4</div>
+          <div class="table">5</div>
+
+          <div class="table">6</div>
+          <div class="table">7</div>
+          <div class="table">8</div>
+          <div class="table">9</div>
+          <div class="table">10</div>
+
+          <div class="table">11</div>
+          <div class="table">12</div>
+          <div class="table">13</div>
+          <div class="table">14</div>
+          <div class="table">15</div>
+        </div>
+      </div>
+
+      <!-- OUTDOOR -->
+      <div class="zone">
+        <h4 class="zone-title">🌿 Outdoor Zone</h4>
+        <div class="table-grid outdoor">
+          <div class="table circle">16</div>
+          <div class="table circle">17</div>
+          <div class="table circle">18</div>
+          <div class="table circle">19</div>
+          <div class="table circle">20</div>
+          <div class="table circle">21</div>
+        </div>
+      </div>
+
+      <!-- ✅ SUBMIT -->
+      <button type="submit" class="btn-primary full">
+        Confirm Reservation
+      </button>
+
+    </form>
+
+    <p id="bookingMessage" class="success"></p>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <p>© 2025 Bourbon.Yard Lampang</p>
+</footer>
+
+<script src="/script.js"></script>
+</body>
+</html>

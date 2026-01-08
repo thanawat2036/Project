@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin | Bourbon.Yard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="nav">
+    <h1 class="logo">Bourbon.Yard</h1>
+    <nav class="menu">
+      <a href="/index.html">Home</a>
+      <a href="/booking.html">Booking</a>
+      <a href="/admin.html" class="btn-outline">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<section class="booking">
+  <div class="booking-card">
+
+    <h2>📋 รายการจองโต๊ะ</h2>
+
+    <div class="form-group">
+      <label>เลือกวันที่</label>
+      <input type="date" id="filterDate">
+    </div>
+
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>วันที่</th>
+          <th>เวลา</th>
+          <th>โต๊ะ</th>
+          <th>จำนวนคน</th>
+          <th>เวลาที่จอง</th>
+        </tr>
+      </thead>
+      <tbody id="bookingList">
+        <tr><td colspan="5">กำลังโหลดข้อมูล...</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <p>© 2025 Bourbon.Yard Lampang</p>
+</footer>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>
