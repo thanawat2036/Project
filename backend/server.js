@@ -79,3 +79,25 @@ app.get("/api/booked", (req, res) => {
 app.listen(PORT, () => {
   console.log(`🔥 Server running → http://localhost:${PORT}`);
 });
+
+// ===== Admin : Get All Bookings =====
+app.get("/api/admin/bookings", (req, res) => {
+  const { date } = req.query;
+
+  let sql = `SELECT * FROM bookings`;
+  let params = [];
+
+  if (date) {
+    sql += ` WHERE date = ?`;
+    params.push(date);
+  }
+
+  sql += ` ORDER BY date DESC, time ASC`;
+
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
+  });
+});
