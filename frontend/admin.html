@@ -1,55 +1,79 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Admin | Bourbon.Yard</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
 
-<header class="header">
-  <div class="nav">
-    <h1 class="logo">Bourbon.Yard</h1>
-    <nav class="menu">
-      <a href="/index.html">Home</a>
-      <a href="/booking.html">Booking</a>
-      <a href="/admin.html" class="btn-outline">Admin</a>
-    </nav>
-  </div>
+<!-- ===== HEADER ===== -->
+<header class="admin-header">
+  <h1>Bourbon<span>.Yard</span> — Admin</h1>
 </header>
 
-<section class="booking">
-  <div class="booking-card">
+<!-- ===== CONTAINER ===== -->
+<section class="admin-container">
 
-    <h2>📋 รายการจองโต๊ะ</h2>
-
-    <div class="form-group">
-      <label>เลือกวันที่</label>
-      <input type="date" id="filterDate">
-    </div>
-
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>วันที่</th>
-          <th>เวลา</th>
-          <th>โต๊ะ</th>
-          <th>จำนวนคน</th>
-          <th>เวลาที่จอง</th>
-        </tr>
-      </thead>
-      <tbody id="bookingList">
-        <tr><td colspan="5">กำลังโหลดข้อมูล...</td></tr>
-      </tbody>
-    </table>
-
+  <!-- CONTROL BAR -->
+  <div class="control-bar">
+    <input type="date" id="adminDate">
+    <input type="time" id="adminTime">
+    <button id="loadTables">โหลดสถานะโต๊ะ</button>
   </div>
+
+  <!-- ===== INDOOR ===== -->
+  <div class="zone">
+    <h3 class="zone-title">🍷 Indoor Zone</h3>
+    <div class="table-grid">
+      <div class="table-card"><div class="table-no">1</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">2</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">3</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">4</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">5</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">6</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">7</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">8</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">9</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">10</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">11</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">12</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">13</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">14</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">15</div><span class="status available">ว่าง</span></div>
+    </div>
+  </div>
+
+  <!-- ===== OUTDOOR ===== -->
+  <div class="zone">
+    <h3 class="zone-title">🌿 Outdoor Zone</h3>
+    <div class="table-grid">
+      <div class="table-card"><div class="table-no">16</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">17</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">18</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">19</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">20</div><span class="status available">ว่าง</span></div>
+      <div class="table-card"><div class="table-no">21</div><span class="status available">ว่าง</span></div>
+    </div>
+  </div>
+
 </section>
 
-<footer class="footer">
-  <p>© 2025 Bourbon.Yard Lampang</p>
-</footer>
+<!-- ===== MODAL ===== -->
+<div id="adminPopup" class="modal-overlay">
+  <div class="modal">
+    <h3>โต๊ะ <span id="popupTableNo"></span></h3>
+
+    <label>จำนวนลูกค้าจริง</label>
+    <input type="number" id="actualPeople" min="1">
+
+    <button class="btn-book" id="checkInBtn">Check-in</button>
+    <button class="btn-walkin" id="walkInBtn">Walk-in</button>
+    <button class="btn-book" id="mergeBtn">ต่อโต๊ะ</button>
+    <button class="btn-close" id="closeBtn">ปิดโต๊ะ</button>
+    <button class="btn-cancel" id="cancelPopup">ยกเลิก</button>
+  </div>
+</div>
 
 <script src="/js/admin.js"></script>
 </body>

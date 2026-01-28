@@ -1,103 +1,157 @@
-const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+import express from "express";
+import mysql from "mysql2/promise";
+import path from "path";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
-// ===== Middleware =====
+/* ===== MIDDLEWARE ===== */
 app.use(express.json());
+app.use(express.static(path.join(process.cwd(), "../frontend")));
 
-// ===== Serve Frontend =====
-app.use(express.static(path.join(__dirname, "../frontend")));
+/* ===== DB CONNECTION ===== */
+const db = await mysql.createPool({
+  host: "localhost",
+  user: "bourbon",
+  password: "080549",
+  database: "bourbon_yard",
+  waitForConnections: true,
+  connectionLimit: 10,
+});
 
+/* ===== HOME ===== */
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+  res.sendFile(path.join(process.cwd(), "../frontend/index.html"));
 });
 
-// ===== Database =====
-const db = new sqlite3.Database("./bookings.db", err => {
-  if (err) console.error(err.message);
-  else console.log("📦 SQLite connected");
-});
+/* =====================================================
+   BOOK TABLE
+   ===================================================== */
+app.post("/api/book", async (req, res) => {
+  try {
+    const { date, time, table, people, name } = req.body;
 
-db.run(`
-  CREATE TABLE IF NOT EXISTS bookings (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date TEXT,
-    time TEXT,
-    table_no TEXT,
-    people INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+    if (!date || !time || !table || !people || !name) {
+      return res.status(400).json({ error: "ข้อมูลไม่ครบ" });
+    }
 
-// ===== Create Booking =====
-app.post("/api/book", (req, res) => {
-  const { date, time, table, people } = req.body;
+    const startTime = time;
+    const endTime = "20:30:00";
 
-  if (!date || !time || !table || !people) {
-    return res.status(400).json({ error: "ข้อมูลไม่ครบ" });
+    /* 🔎 หา table_id */
+    const [[tableRow]] = await db.query(
+      `SELECT id FROM tables WHERE table_no = ?`,
+      [table]
+    );
+
+    if (!tableRow) {
+      return res.status(404).json({ error: "ไม่พบโต๊ะ" });
+    }
+
+    const tableId = tableRow.id;
+
+    /* ⛔ ตรวจเวลาซ้อน */
+    const [exists] = await db.query(
+      `
+      SELECT 1
+      FROM bookings
+      WHERE booking_date = ?
+        AND table_id = ?
+        AND (? < end_time AND ? > start_time)
+      `,
+      [date, tableId, startTime, endTime]
+    );
+
+    if (exists.length > 0) {
+      return res
+        .status(409)
+        .json({ error: "โต๊ะนี้ถูกจองแล้วในช่วงเวลานี้" });
+    }
+
+    /* ✅ INSERT */
+    await db.query(
+      `
+      INSERT INTO bookings
+      (customer_name, booking_date, start_time, end_time, people, table_id)
+      VALUES (?, ?, ?, ?, ?, ?)
+      `,
+      [name, date, startTime, endTime, people, tableId]
+    );
+
+    res.json({ success: true, message: "จองโต๊ะสำเร็จ" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
-
-  db.get(
-    `SELECT 1 FROM bookings WHERE date=? AND time=? AND table_no=?`,
-    [date, time, table],
-    (err, row) => {
-      if (row) {
-        return res.status(409).json({ error: "โต๊ะนี้ถูกจองแล้ว" });
-      }
-
-      db.run(
-        `INSERT INTO bookings (date, time, table_no, people)
-         VALUES (?, ?, ?, ?)`,
-        [date, time, table, people],
-        () => {
-          res.json({ success: true, message: "จองโต๊ะสำเร็จ" });
-        }
-      );
-    }
-  );
 });
 
-// ===== Get Booked Tables =====
-app.get("/api/booked", (req, res) => {
-  const { date, time } = req.query;
+/* =====================================================
+   GET BOOKED TABLES (lock เวลา)
+   ===================================================== */
+app.get("/api/booked", async (req, res) => {
+  try {
+    const { date, time } = req.query;
+    if (!date || !time) return res.json([]);
 
-  if (!date || !time) return res.json([]);
+    const endTime = "20:30:00";
 
-  db.all(
-    `SELECT table_no FROM bookings WHERE date=? AND time=?`,
-    [date, time],
-    (err, rows) => {
-      res.json(rows.map(r => r.table_no));
-    }
-  );
+    const [rows] = await db.query(
+      `
+      SELECT DISTINCT t.table_no
+      FROM bookings b
+      JOIN tables t ON b.table_id = t.id
+      WHERE b.booking_date = ?
+        AND (? < b.end_time AND ? > b.start_time)
+      `,
+      [date, time, endTime]
+    );
+
+    res.json(rows.map(r => r.table_no));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json([]);
+  }
 });
 
-// ===== Start Server =====
+/* =====================================================
+   ADMIN – ดูรายการจอง
+   ===================================================== */
+app.get("/api/admin/bookings", async (req, res) => {
+  try {
+    const { date } = req.query;
+
+    let sql = `
+      SELECT
+        b.id,
+        b.customer_name,
+        b.booking_date,
+        b.start_time,
+        b.end_time,
+        b.people,
+        t.table_no,
+        b.created_at
+      FROM bookings b
+      JOIN tables t ON b.table_id = t.id
+    `;
+
+    const params = [];
+
+    if (date) {
+      sql += ` WHERE b.booking_date = ?`;
+      params.push(date);
+    }
+
+    sql += ` ORDER BY b.booking_date DESC, b.start_time ASC`;
+
+    const [rows] = await db.query(sql, params);
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json([]);
+  }
+});
+
+/* ===== START SERVER ===== */
 app.listen(PORT, () => {
   console.log(`🔥 Server running → http://localhost:${PORT}`);
-});
-
-// ===== Admin : Get All Bookings =====
-app.get("/api/admin/bookings", (req, res) => {
-  const { date } = req.query;
-
-  let sql = `SELECT * FROM bookings`;
-  let params = [];
-
-  if (date) {
-    sql += ` WHERE date = ?`;
-    params.push(date);
-  }
-
-  sql += ` ORDER BY date DESC, time ASC`;
-
-  db.all(sql, params, (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(rows);
-  });
 });

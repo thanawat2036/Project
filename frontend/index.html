@@ -2,98 +2,67 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bourbon.Yard Lampang</title>
-  <link rel="stylesheet" href="/css/style1.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bourbon.Yard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">Bourbon.Yard</div>
-      <ul class="nav-menu">
-        <li><a href="#home">หน้าแรก</a></li>
-        <li><a href="#menu">เมนู & เครื่องดื่ม</a></li>
-        <li><a href="#about">เกี่ยวกับร้าน</a></li>
-        <li><a href="booking.html">ติดต่อ / จองโต๊ะ</a></li>
-      </ul>
-      <div class="hamburger" onclick="toggleMenu()">☰</div>
-    </nav>
-  </header>
 
-  <!-- HERO -->
- <section id="home" class="hero dark-bar">
-  <div class="hero-content">
-    <h1>ยินดีต้อนรับสู่ Bourbon.Yard</h1>
-    <p>ชิลล์ไปกับไวน์ คราฟต์เบียร์ ดนตรีสด ณ ห้าแยกหอนาฬิกา, ลำปาง</p>
-    <a href="booking.html" class="btn-booking">จองโต๊ะตอนนี้</a>
+<header class="header">
+  <div class="nav">
+    <div class="logo">Bourbon.Yard</div>
+    <div class="menu">
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="booking.html" class="btn-outline">Booking</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <h2>Experience the<br>Perfect Night</h2>
+    <p>
+      Bourbon.Yard คือพื้นที่แห่งรสชาติ ดนตรี และบรรยากาศ  
+      จองโต๊ะง่าย ๆ แล้วมาใช้เวลาดี ๆ ไปด้วยกัน
+    </p>
+    <a href="booking.html" class="btn-primary">Book a Table</a>
+  </div>
+
+  <div class="hero-image">
+    <img src="/asset/asset.jpeg" alt="Bourbon Yard">
   </div>
 </section>
 
-
-  <!-- MENU -->
-  <section id="menu" class="menu">
-    <h2>เมนูแนะนำ</h2>
-    <div class="grid">
-      <div class="card">ไวน์ & ค็อกเทล</div>
-      <div class="card">คราฟต์เบียร์</div>
-      <div class="card">กับแกล้ม / Share Plates</div>
-      <div class="card">ชีสบอร์ด & ของว่าง</div>
-    </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section id="about" class="about">
-  <h2>เกี่ยวกับร้าน</h2>
-
-  <p class="about-desc">
-    Bourbon Yard – เบอร์เบิ้น ยาร์ด<br />
-    ร้านบรรยากาศชิลล์ พร้อมดนตรีสดทุกค่ำคืน<br />
-    ณ ห้าแยกหอนาฬิกา จังหวัดลำปาง
-  </p>
-
-  <!-- จุดเด่นร้าน -->
-  <div class="about-highlight">
-    Wine | Natural Wine | Beer | Cocktail<br />
-    🎶 Live Music
+<section class="features" id="features">
+  <div class="feature-card">
+    <h3>🥃 Premium Drinks</h3>
+    <p>คัดสรร Bourbon และเครื่องดื่มคุณภาพจากทั่วโลก</p>
   </div>
 
-  <!-- ติดต่อ & แผนที่ -->
-  <div class="about-contact">
-    <div class="contact-info">
-      <p>
-        📲 จองโต๊ะล่วงหน้าได้ที่ LINE<br />
-        <strong>@bourbonyard</strong>
-      </p>
+  <div class="feature-card">
+    <h3>🎶 Live Music</h3>
+    <p>ดนตรีสดทุกคืน เติมเต็มบรรยากาศยามค่ำ</p>
+  </div>
 
-      <p>
-        📞 โทร <a href="tel:0903165489">090 316 5489</a>
-      </p>
-
-      <a href="https://line.me/R/ti/p/@bourbonyard" class="btn-booking">
-      <span class="line-text">แอดไลน์เพื่อจองโต๊ะ</span>
-    </a>
-    </div>
-
-    <div class="contact-map">
-      <iframe
-        src="https://www.google.com/maps?q=ห้าแยกหอนาฬิกา ลำปาง&output=embed"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
-    </div>
+  <div class="feature-card">
+    <h3>🪑 Easy Booking</h3>
+    <p>จองโต๊ะออนไลน์ เลือกโต๊ะได้ทันทีแบบเรียลไทม์</p>
   </div>
 </section>
 
+<section class="highlight" id="about">
+  <h2>Where Every Night Matters</h2>
+  <p>ไม่ว่าจะเป็นวันพิเศษ หรือวันธรรมดา  
+     Bourbon.Yard พร้อมต้อนรับคุณเสมอ</p>
+</section>
 
-  <!-- ปุ่มลอย -->
-  <a href="booking.html" class="floating-btn">จองโต๊ะ</a>
-
-  <footer>
-    <p>© 2025 Bourbon.Yard Lampang. All rights reserved.</p>
-  </footer>
-
-  <script src="script1.js"></script>
-  
+<footer class="footer">
+  © 2026 Bourbon.Yard — All rights reserved
+</footer>
 
 </body>
 </html>
