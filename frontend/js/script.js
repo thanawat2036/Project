@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+  /* ===== TABLE MERGE RULE ===== */
+  const mergedTables = {
+    "1": ["1", "3"],
+    "12": ["12", "13"],
+    "14": ["14", "15"]
+  };
+
   const tables = document.querySelectorAll(".table");
   const popup = document.getElementById("tablePopup");
   const popupTableNo = document.getElementById("popupTableNo");
@@ -41,31 +49,75 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ===============================
-     CONFIRM = BOOK NOW
+     CONFIRM = BOOK NOW (REAL API)
   =============================== */
-  confirmBtn.addEventListener("click", () => {
+  confirmBtn.addEventListener("click", async () => {
     if (!selectedTable) return;
 
-    if (!customerName.value.trim()) {
-      alert("กรุณากรอกชื่อผู้จอง");
-      return;
+    const people = parseInt(popupPeople.value);
+    const name = customerName.value.trim();
+    const time = popupTime.value;
+    const date = document.getElementById("date")?.value;
+
+    if (!name) return alert("กรุณากรอกชื่อผู้จอง");
+    if (!time || !date) return alert("กรุณาเลือกวันที่และเวลา");
+
+    let tablesToBook = [selectedTable.textContent];
+
+    /* ===== MORE THAN 5 PEOPLE → MERGE TABLE ===== */
+    if (people > 5) {
+      const mainTable = selectedTable.textContent;
+
+      if (!mergedTables[mainTable]) {
+        alert("โต๊ะนี้ไม่สามารถต่อโต๊ะได้ กรุณาเลือกโต๊ะอื่น");
+        return;
+      }
+
+      tablesToBook = mergedTables[mainTable];
     }
 
     popup.classList.remove("active");
     loading.classList.add("active");
 
-    // mock loading / api
-    setTimeout(() => {
+    try {
+      /* ===== BOOK ALL TABLES ===== */
+      for (const tableNo of tablesToBook) {
+        const res = await fetch("/api/book", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            date,
+            time,
+            people,
+            table: tableNo
+          })
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+          throw new Error(result.message || "จองไม่สำเร็จ");
+        }
+      }
+
+      /* ===== UPDATE UI ===== */
+      tables.forEach(t => {
+        if (tablesToBook.includes(t.textContent)) {
+          t.classList.add("unavailable");
+        }
+      });
+
+      showToast(
+        `🎉 จองโต๊ะ ${tablesToBook.join(" + ")} สำเร็จ (${people} คน)`
+      );
+
+    } catch (err) {
+      alert(err.message);
+    } finally {
       loading.classList.remove("active");
-
-      // mark table unavailable
-      selectedTable.classList.add("unavailable");
-      selectedTable.classList.remove("selected");
-
-      showToast(`✅ จองโต๊ะ ${selectedTable.textContent} สำเร็จ`);
-
       selectedTable = null;
-    }, 800);
+    }
   });
 
   /* ===============================
@@ -89,4 +141,5 @@ document.addEventListener("DOMContentLoaded", () => {
       selectedTable = null;
     }
   });
+
 });
