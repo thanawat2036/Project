@@ -412,3 +412,181 @@ body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* ===============================
+   RESPONSIVE – TABLET & MOBILE
+================================ */
+@media (max-width: 768px) {
+
+  /* HEADER */
+  .nav {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .logo {
+    font-size: 22px;
+  }
+
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .menu a,
+  .menu span,
+  .menu button {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  /* HERO */
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 120px 16px 60px;
+    text-align: center;
+  }
+
+  .hero h2 {
+    font-size: 32px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .hero-image img {
+    margin-top: 20px;
+    border-radius: 18px;
+  }
+
+  /* FEATURES */
+  .features {
+    grid-template-columns: 1fr;
+    padding: 60px 16px;
+  }
+
+  .feature-card {
+    padding: 24px;
+  }
+
+  /* BOOKING CARD */
+  .booking {
+    padding: 100px 16px;
+  }
+
+  .booking-card {
+    padding: 28px 20px;
+  }
+
+  .booking-card h2 {
+    font-size: 26px;
+  }
+
+  /* DATE / TIME */
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* TABLE GRID */
+  .table-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .table-grid.outdoor {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .table {
+    height: 56px;
+    font-size: 16px;
+  }
+
+  /* POPUP */
+  #tablePopup .popup-card {
+    max-width: 90%;
+    padding: 24px;
+  }
+
+  #tablePopup h3 {
+    font-size: 20px;
+  }
+
+  /* FOOTER */
+  .footer {
+    font-size: 13px;
+    padding: 20px;
+  }
+}
+
+/* ===============================
+   RESPONSIVE – SMALL MOBILE
+================================ */
+@media (max-width: 480px) {
+
+  .hero h2 {
+    font-size: 26px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .btn-primary {
+    padding: 12px 28px;
+    font-size: 14px;
+  }
+
+  .table-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .table-grid.outdoor {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .table {
+    height: 60px;
+    font-size: 17px;
+  }
+
+  .popup-actions {
+    flex-direction: column;
+  }
+}
+
+.contact-admin {
+  margin-top: 60px;
+  padding: 80px 20px;
+  background: #faf4ee;
+  color: #fff;
+  text-align: center;
+}
+
+.contact-admin h2 {
+  margin-bottom: 10px;
+  color: #ccc;
+}
+
+.contact-admin p {
+  color: #ccc;
+  margin-bottom: 30px;
+}
+
+#contactForm {
+  max-width: 500px;
+  margin: auto;
+}
+
+#contactForm textarea {
+  width: 100%;
+  height: 120px;
+  padding: 15px;
+  border-radius: 10px;
+  border: none;
+  resize: none;
+  font-family: "Prompt", sans-serif;
+  margin-bottom: 20px;
+}

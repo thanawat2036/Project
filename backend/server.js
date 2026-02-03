@@ -1,15 +1,36 @@
 import express from "express";
 import mysql from "mysql2/promise";
 import path from "path";
+import session from "express-session";
+import bcrypt from "bcrypt";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 5000;
 
-/* ===== MIDDLEWARE ===== */
 app.use(express.json());
-app.use(express.static(path.join(process.cwd(), "../frontend")));
+app.use(express.urlencoded({ extended: true }));
 
-/* ===== DB CONNECTION ===== */
+/* ===== SESSION ===== */
+app.use(
+  session({
+    secret: "bourbon-yard-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 4,
+      sameSite: "lax",
+    },
+  })
+);
+
+app.use(express.static(path.join(__dirname, "../frontend")));
+
+/* ===== DB ===== */
 const db = await mysql.createPool({
   host: "localhost",
   user: "bourbon",
@@ -17,141 +38,283 @@ const db = await mysql.createPool({
   database: "bourbon_yard",
   waitForConnections: true,
   connectionLimit: 10,
+  timezone: "+07:00",
 });
 
-/* ===== HOME ===== */
-app.get("/", (req, res) => {
-  res.sendFile(path.join(process.cwd(), "../frontend/index.html"));
-});
+/* =========================
+   AUTH
+========================= */
 
-/* =====================================================
-   BOOK TABLE
-   ===================================================== */
-app.post("/api/book", async (req, res) => {
+/* REGISTER */
+app.post("/api/register", async (req, res) => {
   try {
-    const { date, time, table, people, name } = req.body;
-
-    if (!date || !time || !table || !people || !name) {
-      return res.status(400).json({ error: "ข้อมูลไม่ครบ" });
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "ข้อมูลไม่ครบ" });
     }
 
-    const startTime = time;
-    const endTime = "20:30:00";
-
-    /* 🔎 หา table_id */
-    const [[tableRow]] = await db.query(
-      `SELECT id FROM tables WHERE table_no = ?`,
-      [table]
+    const [[exists]] = await db.query(
+      "SELECT id FROM users WHERE email=?",
+      [email]
     );
-
-    if (!tableRow) {
-      return res.status(404).json({ error: "ไม่พบโต๊ะ" });
+    if (exists) {
+      return res.status(409).json({ message: "อีเมลนี้ถูกใช้แล้ว" });
     }
 
-    const tableId = tableRow.id;
+    const hash = await bcrypt.hash(password, 10);
 
-    /* ⛔ ตรวจเวลาซ้อน */
-    const [exists] = await db.query(
-      `
-      SELECT 1
-      FROM bookings
-      WHERE booking_date = ?
-        AND table_id = ?
-        AND (? < end_time AND ? > start_time)
-      `,
-      [date, tableId, startTime, endTime]
+    const [result] = await db.query(
+      "INSERT INTO users (name,email,password,role) VALUES (?,?,?,'user')",
+      [name, email, hash]
     );
 
-    if (exists.length > 0) {
-      return res
-        .status(409)
-        .json({ error: "โต๊ะนี้ถูกจองแล้วในช่วงเวลานี้" });
-    }
-
-    /* ✅ INSERT */
-    await db.query(
-      `
-      INSERT INTO bookings
-      (customer_name, booking_date, start_time, end_time, people, table_id)
-      VALUES (?, ?, ?, ?, ?, ?)
-      `,
-      [name, date, startTime, endTime, people, tableId]
-    );
-
-    res.json({ success: true, message: "จองโต๊ะสำเร็จ" });
+    res.json({ success: true, id: result.insertId });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+    console.error("REGISTER ERROR:", err);
+    res.status(500).json({ message: "สมัครสมาชิกไม่สำเร็จ" });
   }
 });
 
-/* =====================================================
-   GET BOOKED TABLES (lock เวลา)
-   ===================================================== */
-app.get("/api/booked", async (req, res) => {
+/* LOGIN */
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const [[user]] = await db.query(
+      "SELECT * FROM users WHERE email=?",
+      [email]
+    );
+    if (!user) {
+      return res.status(401).json({ message: "ไม่พบบัญชี" });
+    }
+
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) {
+      return res.status(401).json({ message: "รหัสผ่านผิด" });
+    }
+
+    req.session.user = {
+      id: user.id,
+      name: user.name,
+      role: user.role,
+    };
+
+    res.json({ success: true, user: req.session.user });
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    res.status(500).json({ message: "เข้าสู่ระบบไม่สำเร็จ" });
+  }
+});
+
+/* LOGOUT */
+app.post("/api/logout", (req, res) => {
+  req.session.destroy(() => res.json({ success: true }));
+});
+
+/* CURRENT USER */
+app.get("/api/me", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "unauthorized" });
+  }
+  res.json(req.session.user);
+});
+
+app.post("/api/contact-admin", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "กรุณาเข้าสู่ระบบ" });
+  }
+
+  const { message } = req.body;
+  if (!message) {
+    return res.status(400).json({ message: "กรุณากรอกข้อความ" });
+  }
+
+  await db.query(
+    "INSERT INTO messages (user_id, message) VALUES (?, ?)",
+    [req.session.user.id, message]
+  );
+
+  res.json({ success: true });
+});
+
+app.get("/api/admin/messages", async (req, res) => {
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.status(403).json([]);
+  }
+
+  const [rows] = await db.query(`
+    SELECT
+      m.id,
+      u.name,
+      u.email,
+      m.message,
+      m.created_at
+    FROM messages m
+    JOIN users u ON m.user_id = u.id
+    ORDER BY m.created_at DESC
+  `);
+
+  res.json(rows);
+});
+
+/* =========================
+   BOOKING
+========================= */
+
+/* helper: เวลาสิ้นสุดไม่เกิน 20:30 */
+function calcEndTime(startTime) {
+  const [h, m] = startTime.split(":").map(Number);
+
+  const start = new Date();
+  start.setHours(h, m, 0);
+
+  const end = new Date(start);
+  end.setHours(end.getHours() + 2); // จอง 2 ชม.
+
+  const closing = new Date(start);
+  closing.setHours(20, 30, 0);
+
+  const finalEnd = end > closing ? closing : end;
+  return finalEnd.toTimeString().slice(0, 8);
+}
+
+/* BOOK */
+app.post("/api/book", async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({ message: "กรุณาเข้าสู่ระบบ" });
+    }
+
+    const { date, time, table, people } = req.body;
+    if (!date || !time || !table || !people) {
+      return res.status(400).json({ message: "ข้อมูลการจองไม่ครบ" });
+    }
+
+    const endTime = calcEndTime(time);
+
+    /* ❗ user ละ 1 โต๊ะ / วัน */
+    // ❗ user จองได้แค่ 1 โต๊ะต่อวัน
+const [[userBooked]] = await db.query(
+  `
+  SELECT id FROM bookings
+  WHERE user_id = ?
+    AND booking_date = ?
+  `,
+  [req.session.user.id, date]
+);
+
+if (userBooked) {
+  return res.status(409).json({
+    message: "คุณได้จองโต๊ะไปแล้วในวันนี้",
+  });
+}
+
+
+    /* หาโต๊ะ */
+    const [[t]] = await db.query(
+      "SELECT id FROM tables WHERE table_no=?",
+      [table]
+    );
+    if (!t) {
+      return res.status(404).json({ message: "ไม่พบโต๊ะ" });
+    }
+
+    /* กันจองซ้อน */
+    const [exists] = await db.query(
+      `
+      SELECT id FROM bookings
+      WHERE booking_date=?
+        AND table_id=?
+        AND (? < end_time AND ? > start_time)
+      `,
+      [date, t.id, time, endTime]
+    );
+
+    if (exists.length > 0) {
+      return res.status(409).json({ message: "โต๊ะไม่ว่าง" });
+    }
+
+    /* INSERT */
+    await db.query(
+      `
+      INSERT INTO bookings
+      (user_id, booking_date, start_time, end_time, people, table_id)
+      VALUES (?, ?, ?, ?, ?, ?)
+      `,
+      [req.session.user.id, date, time, endTime, people, t.id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("BOOK ERROR:", err);
+    res.status(500).json({ message: "จองโต๊ะไม่สำเร็จ" });
+  }
+});
+
+/* BOOKED TABLES */
+app.get("/api/booked-tables", async (req, res) => {
   try {
     const { date, time } = req.query;
     if (!date || !time) return res.json([]);
 
-    const endTime = "20:30:00";
+    const endTime = calcEndTime(time);
 
     const [rows] = await db.query(
       `
       SELECT DISTINCT t.table_no
       FROM bookings b
-      JOIN tables t ON b.table_id = t.id
-      WHERE b.booking_date = ?
+      JOIN tables t ON b.table_id=t.id
+      WHERE b.booking_date=?
         AND (? < b.end_time AND ? > b.start_time)
       `,
       [date, time, endTime]
     );
 
-    res.json(rows.map(r => r.table_no));
+    res.json(rows.map(r => Number(r.table_no)));
   } catch (err) {
-    console.error(err);
+    console.error("BOOKED TABLES ERROR:", err);
     res.status(500).json([]);
   }
 });
 
-/* =====================================================
-   ADMIN – ดูรายการจอง
-   ===================================================== */
+/* =========================
+   ADMIN
+========================= */
 app.get("/api/admin/bookings", async (req, res) => {
-  try {
-    const { date } = req.query;
-
-    let sql = `
-      SELECT
-        b.id,
-        b.customer_name,
-        b.booking_date,
-        b.start_time,
-        b.end_time,
-        b.people,
-        t.table_no,
-        b.created_at
-      FROM bookings b
-      JOIN tables t ON b.table_id = t.id
-    `;
-
-    const params = [];
-
-    if (date) {
-      sql += ` WHERE b.booking_date = ?`;
-      params.push(date);
-    }
-
-    sql += ` ORDER BY b.booking_date DESC, b.start_time ASC`;
-
-    const [rows] = await db.query(sql, params);
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json([]);
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.status(403).json([]);
   }
+
+  const [rows] = await db.query(`
+    SELECT
+      b.id,
+      u.name AS customer,
+      t.table_no,
+      b.booking_date,
+      b.start_time,
+      b.end_time,
+      b.people
+    FROM bookings b
+    JOIN users u ON b.user_id=u.id
+    JOIN tables t ON b.table_id=t.id
+    ORDER BY b.booking_date DESC
+  `);
+
+  res.json(rows);
 });
 
-/* ===== START SERVER ===== */
+app.get("/api/admin/users", async (req, res) => {
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.status(403).json([]);
+  }
+
+  const [rows] = await db.query(
+    "SELECT name,email,role FROM users ORDER BY id DESC"
+  );
+  res.json(rows);
+});
+
+/* ===== START ===== */
 app.listen(PORT, () => {
   console.log(`🔥 Server running → http://localhost:${PORT}`);
 });

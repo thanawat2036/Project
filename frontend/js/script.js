@@ -1,117 +1,172 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
-  /* ===== TABLE MERGE RULE ===== */
-  const mergedTables = {
-    "1": ["1", "3"],
-    "12": ["12", "13"],
-    "14": ["14", "15"]
-  };
+  /* ==================================================
+     AUTH CHECK (user.html)
+  ================================================== */
+  const usernameEl = document.getElementById("username");
+  if (usernameEl) {
+    const res = await fetch("/api/me", { credentials: "include" });
 
+    if (!res.ok) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const user = await res.json();
+    usernameEl.textContent = `คุณ ${user.name}`;
+  }
+
+  /* ==================================================
+     LOGIN
+  ================================================== */
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) return alert(data.message);
+
+      window.location.href = "user.html";
+    });
+  }
+
+  /* ==================================================
+     REGISTER
+  ================================================== */
+  const registerForm = document.getElementById("registerForm");
+  if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) return alert(data.message);
+
+      alert("✅ สมัครสมาชิกสำเร็จ");
+      window.location.href = "login.html";
+    });
+  }
+
+  /* ==================================================
+     TABLE BOOKING
+  ================================================== */
   const tables = document.querySelectorAll(".table");
+  if (tables.length === 0) return;
+
+  const dateInput = document.getElementById("date");
+  const timeInput = document.getElementById("time");
+
+  /* ---------- โหลดโต๊ะที่ถูกจอง ---------- */
+  async function loadBookedTables() {
+    const date = dateInput?.value;
+    const time = timeInput?.value;
+    if (!date || !time) return;
+
+    // reset โต๊ะทั้งหมด
+    tables.forEach(t => t.classList.remove("unavailable"));
+
+    const res = await fetch(
+      `/api/booked-tables?date=${date}&time=${time}`
+    );
+
+    if (!res.ok) return;
+
+    const booked = await res.json(); // [1,5,12]
+
+    tables.forEach(t => {
+      const tableNo = Number(t.textContent.trim());
+      if (booked.includes(tableNo)) {
+        t.classList.add("unavailable");
+      }
+    });
+  }
+
+  dateInput?.addEventListener("change", loadBookedTables);
+  timeInput?.addEventListener("change", loadBookedTables);
+
+  /* ---------- popup booking ---------- */
   const popup = document.getElementById("tablePopup");
   const popupTableNo = document.getElementById("popupTableNo");
   const popupPeople = document.getElementById("popupPeople");
   const popupTime = document.getElementById("popupTime");
-  const customerName = document.getElementById("customerName");
-
   const cancelBtn = document.getElementById("cancelTable");
   const confirmBtn = document.getElementById("confirmTable");
-
   const toast = document.getElementById("toast");
   const loading = document.getElementById("loadingOverlay");
 
   let selectedTable = null;
 
-  /* ===============================
-     CLICK TABLE → OPEN POPUP
-  =============================== */
   tables.forEach(table => {
     table.addEventListener("click", () => {
       if (table.classList.contains("unavailable")) return;
 
+      if (!dateInput.value || !timeInput.value) {
+        alert("กรุณาเลือกวันที่และเวลาก่อน");
+        return;
+      }
+
       selectedTable = table;
       popupTableNo.textContent = table.textContent;
-
       popupPeople.value = 1;
-      customerName.value = "";
-      popupTime.value = document.getElementById("time")?.value || "";
+      popupTime.value = timeInput.value;
 
       popup.classList.add("active");
     });
   });
 
-  /* ===============================
-     CANCEL POPUP
-  =============================== */
-  cancelBtn.addEventListener("click", () => {
+  cancelBtn?.addEventListener("click", () => {
     popup.classList.remove("active");
     selectedTable = null;
   });
 
-  /* ===============================
-     CONFIRM = BOOK NOW (REAL API)
-  =============================== */
-  confirmBtn.addEventListener("click", async () => {
+  confirmBtn?.addEventListener("click", async () => {
     if (!selectedTable) return;
 
     const people = parseInt(popupPeople.value);
-    const name = customerName.value.trim();
+    const date = dateInput.value;
     const time = popupTime.value;
-    const date = document.getElementById("date")?.value;
-
-    if (!name) return alert("กรุณากรอกชื่อผู้จอง");
-    if (!time || !date) return alert("กรุณาเลือกวันที่และเวลา");
-
-    let tablesToBook = [selectedTable.textContent];
-
-    /* ===== MORE THAN 5 PEOPLE → MERGE TABLE ===== */
-    if (people > 5) {
-      const mainTable = selectedTable.textContent;
-
-      if (!mergedTables[mainTable]) {
-        alert("โต๊ะนี้ไม่สามารถต่อโต๊ะได้ กรุณาเลือกโต๊ะอื่น");
-        return;
-      }
-
-      tablesToBook = mergedTables[mainTable];
-    }
 
     popup.classList.remove("active");
     loading.classList.add("active");
 
     try {
-      /* ===== BOOK ALL TABLES ===== */
-      for (const tableNo of tablesToBook) {
-        const res = await fetch("/api/book", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            date,
-            time,
-            people,
-            table: tableNo
-          })
-        });
-
-        const result = await res.json();
-
-        if (!res.ok) {
-          throw new Error(result.message || "จองไม่สำเร็จ");
-        }
-      }
-
-      /* ===== UPDATE UI ===== */
-      tables.forEach(t => {
-        if (tablesToBook.includes(t.textContent)) {
-          t.classList.add("unavailable");
-        }
+      const res = await fetch("/api/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          date,
+          time,
+          people,
+          table: Number(selectedTable.textContent)
+        }),
       });
 
-      showToast(
-        `🎉 จองโต๊ะ ${tablesToBook.join(" + ")} สำเร็จ (${people} คน)`
-      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
 
+      showToast("🎉 จองโต๊ะสำเร็จ");
+      await loadBookedTables();
     } catch (err) {
       alert(err.message);
     } finally {
@@ -120,26 +175,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ===============================
-     TOAST FUNCTION
-  =============================== */
-  function showToast(message) {
-    toast.textContent = message;
+  function showToast(msg) {
+    toast.textContent = msg;
     toast.classList.add("show");
-
-    setTimeout(() => {
-      toast.classList.remove("show");
-    }, 2500);
+    setTimeout(() => toast.classList.remove("show"), 2500);
   }
+});
 
-  /* ===============================
-     CLOSE POPUP WHEN CLICK OUTSIDE
-  =============================== */
-  popup.addEventListener("click", e => {
-    if (e.target === popup) {
-      popup.classList.remove("active");
-      selectedTable = null;
-    }
-  });
-
+/* ==================================================
+   LOGOUT
+================================================== */
+const logoutBtn = document.getElementById("logout");
+logoutBtn?.addEventListener("click", async () => {
+  await fetch("/api/logout", { method: "POST", credentials: "include" });
+  window.location.href = "login.html";
 });
