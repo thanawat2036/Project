@@ -314,6 +314,15 @@ app.get("/api/admin/users", async (req, res) => {
   res.json(rows);
 });
 
+app.delete("/api/admin/bookings/:id", async (req, res) => {
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.status(403).json({ message: "forbidden" });
+  }
+
+  await db.query("DELETE FROM bookings WHERE id=?", [req.params.id]);
+  res.json({ success: true });
+});
+
 /* ===== START ===== */
 app.listen(PORT, () => {
   console.log(`🔥 Server running → http://localhost:${PORT}`);

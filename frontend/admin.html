@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Bourbon.Yard | Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -20,9 +21,10 @@
 </header>
 
 <section class="booking">
-  <div class="booking-card" style="max-width:900px">
+  <div class="booking-card" style="max-width:1000px">
 
     <!-- BOOKINGS -->
+    
     <div id="bookings" class="admin-section">
       <h2>📅 รายการจองโต๊ะ</h2>
       <table class="admin-table">
@@ -32,12 +34,14 @@
             <th>โต๊ะ</th>
             <th>วันที่</th>
             <th>เวลา</th>
-            <th>คน</th>
+            <th>จำนวนคน</th>
+            <th>จัดการ</th>
           </tr>
         </thead>
         <tbody id="bookingList"></tbody>
       </table>
     </div>
+
 
     <!-- USERS -->
     <div id="users" class="admin-section" style="display:none">
@@ -48,6 +52,7 @@
             <th>ชื่อ</th>
             <th>Email</th>
             <th>สิทธิ์</th>
+            <th>จัดการ</th>
           </tr>
         </thead>
         <tbody id="userList"></tbody>
