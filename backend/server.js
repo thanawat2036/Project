@@ -4,12 +4,13 @@ import path from "path";
 import session from "express-session";
 import bcrypt from "bcrypt";
 import { fileURLToPath } from "url";
+import multer from "multer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -169,7 +170,7 @@ function calcEndTime(startTime) {
   start.setHours(h, m, 0);
 
   const end = new Date(start);
-  end.setHours(end.getHours() + 2); // จอง 2 ชม.
+  end.setHours(end.getHours() + 3); // จอง 2 ชม.
 
   const closing = new Date(start);
   closing.setHours(20, 30, 0);
@@ -323,7 +324,33 @@ app.delete("/api/admin/bookings/:id", async (req, res) => {
   res.json({ success: true });
 });
 
+const storage = multer.diskStorage({
+  destination: "public/uploads",
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+app.post(
+  "/api/admin/upload-image",
+  upload.single("image"),
+  async (req, res) => {
+    if (req.session.user.role !== "admin") {
+      return res.sendStatus(403);
+    }
+
+    await db.query(
+      "UPDATE site_settings SET value=? WHERE `key`='hero_image'",
+      [req.file.filename]
+    );
+
+    res.json({ success: true });
+  }
+);
+
 /* ===== START ===== */
 app.listen(PORT, () => {
-  console.log(`🔥 Server running → http://localhost:${PORT}`);
+  console.log("Server running on port", PORT);
 });
