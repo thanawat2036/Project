@@ -2,6 +2,8 @@ import express from "express";
 import app from "./app.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import {db} from "./config/db.js";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +19,10 @@ app.use(express.static(frontendPath));
 app.get("/", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
+
+db.query("SELECT 1")
+  .then(() => console.log("✅ MySQL connected"))
+  .catch(err => console.error("❌ MySQL error", err));
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

@@ -1,14 +1,11 @@
 import express from "express";
 import session from "express-session";
 import cors from "cors";
-import dotenv from "dotenv";
 
 import authRoutes from "./routes/auth.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import errorHandler from "./middlewares/error.middleware.js";
-
-dotenv.config();
 
 const app = express();
 
