@@ -3,29 +3,59 @@ import session from "express-session";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import sessionConfig from "../config/session.js";
 import authRoutes from "./routes/auth.routes.js";
-import productRoutes from "./routes/product.routes.js";
-import errorMiddleware from "./middleware/error.middleware.js";
+import bookingRoutes from "./routes/booking.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
+import errorHandler from "./middlewares/error.middleware.js";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-}));
+/* =========================
+   CORS
+========================= */
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || true,
+    credentials: true,
+  })
+);
 
+/* =========================
+   BODY PARSER
+========================= */
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static("uploads"));
+app.use(express.urlencoded({ extended: false }));
 
-app.use(session(sessionConfig));
+/* =========================
+   SESSION
+========================= */
+app.use(
+  session({
+    name: "bourbon.sid",
+    secret: process.env.SESSION_SECRET || "bourbon-yard-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 4, // 4 ชั่วโมง
+    },
+  })
+);
 
-app.use("/api/auth", authRoutes);
-app.use("/api/products", productRoutes);
+/* =========================
+   ROUTES
+========================= */
+app.use("/api", authRoutes);
+app.use("/api", bookingRoutes);
+app.use("/api/admin", adminRoutes);
 
-app.use(errorMiddleware);
+/* =========================
+   ERROR HANDLER
+========================= */
+app.use(errorHandler);
 
 export default app;
