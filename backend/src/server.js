@@ -1,16 +1,19 @@
-import app from "./app.js";
 import express from "express";
+import app from "./app.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// serve frontend
-const frontendPath = path.join(__dirname, "../frontend");
+// 🔥 frontend อยู่ที่ project-root/frontend
+const frontendPath = path.join(__dirname, "../../frontend");
+
+console.log("Frontend path:", frontendPath); // debug ได้
+
 app.use(express.static(frontendPath));
 
-// root → index.html
+// fallback
 app.get("/", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
