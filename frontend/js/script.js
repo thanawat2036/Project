@@ -37,11 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await res.json();
       if (!res.ok) return alert(data.message);
 
-      if (data.user.role === "admin") {
-        window.location.href = "/admin.html";
-      } else {
-        window.location.href = "/user.html"; // หรือ index.html
-      }
+      window.location.href = "user.html";
     });
   }
 
@@ -193,32 +189,4 @@ const logoutBtn = document.getElementById("logout");
 logoutBtn?.addEventListener("click", async () => {
   await fetch("/api/logout", { method: "POST", credentials: "include" });
   window.location.href = "login.html";
-});
-
-/* =========================
-   CONTACT ADMIN
-========================= */
-const contactForm = document.getElementById("contactForm");
-
-contactForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const message = document.getElementById("message").value.trim();
-  if (!message) return;
-
-  const res = await fetch("/api/contact-admin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ message }),
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    return alert(data.message || "ส่งข้อความไม่สำเร็จ");
-  }
-
-  alert("✅ ส่งข้อความถึงแอดมินเรียบร้อย");
-  contactForm.reset();
 });
