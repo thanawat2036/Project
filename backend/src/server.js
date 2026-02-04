@@ -1,17 +1,14 @@
 import express from "express";
-import app from "./app.js";
 import path from "path";
 import { fileURLToPath } from "url";
-import {db} from "./config/db.js";
-
+import app from "./app.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🔥 frontend อยู่ที่ project-root/frontend
+// frontend path
 const frontendPath = path.join(__dirname, "../../frontend");
-
-console.log("Frontend path:", frontendPath); // debug ได้
+console.log("Frontend path:", frontendPath);
 
 app.use(express.static(frontendPath));
 
@@ -20,11 +17,9 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-db.query("SELECT 1")
-  .then(() => console.log("✅ MySQL connected"))
-  .catch(err => console.error("❌ MySQL error", err));
+const PORT = process.env.PORT || 10000;
 
-const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+  console.log("🚀 Server running on port", PORT);
+  console.log("DATABASE_URL =", process.env.DATABASE_URL ? "✅ SET" : "❌ UNDEFINED");
 });
