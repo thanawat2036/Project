@@ -1,23 +1,16 @@
-import * as service from "../services/auth.service.js";
+import { login as loginService, register as registerService } 
+  from "../services/auth.service.js";
 
-export async function login(req, res, next) {
-  try {
-    const user = await service.login(req.body);
-    req.session.user = user;
-    res.json({ user });
-  } catch (err) {
-    next(err);
-  }
-}
+export const login = async (req, res) => {
+  const user = await loginService(req.body);
+  req.session.user = user;
+  res.json({ user });
+};
 
-export async function register(req, res, next) {
-  try {
-    await service.register(req.body);
-    res.json({ message: "register success" });
-  } catch (err) {
-    next(err);
-  }
-}
+export const register = async (req, res) => {
+  await registerService(req.body);
+  res.json({ message: "register success" });
+};
 
 export function logout(req, res) {
   req.session.destroy(() => {
