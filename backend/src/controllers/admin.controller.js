@@ -1,11 +1,11 @@
-import {db} from "../config/db.js";
+import db from "../config/db.js";
 
 /* ======================
    BOOKINGS
 ====================== */
 export const bookings = async (req, res, next) => {
   try {
-    const [rows] = await db.query(`
+    const { rows } = await db.query(`
       SELECT 
         b.id,
         u.name AS customer,
@@ -27,9 +27,11 @@ export const bookings = async (req, res, next) => {
 
 export const deleteBooking = async (req, res, next) => {
   try {
-    await db.query("DELETE FROM bookings WHERE id = ?", [
-      req.params.id,
-    ]);
+    await db.query(
+      "DELETE FROM bookings WHERE id = $1",
+      [req.params.id]
+    );
+
     res.json({ message: "booking deleted" });
   } catch (err) {
     next(err);
@@ -41,11 +43,12 @@ export const deleteBooking = async (req, res, next) => {
 ====================== */
 export const users = async (req, res, next) => {
   try {
-    const [rows] = await db.query(`
+    const { rows } = await db.query(`
       SELECT id, name, email, role
       FROM users
       ORDER BY id DESC
     `);
+
     res.json(rows);
   } catch (err) {
     next(err);
@@ -57,7 +60,7 @@ export const changeRole = async (req, res, next) => {
     const { userId, role } = req.body;
 
     await db.query(
-      "UPDATE users SET role = ? WHERE id = ?",
+      "UPDATE users SET role = $1 WHERE id = $2",
       [role, userId]
     );
 
@@ -69,9 +72,11 @@ export const changeRole = async (req, res, next) => {
 
 export const deleteUser = async (req, res, next) => {
   try {
-    await db.query("DELETE FROM users WHERE id = ?", [
-      req.params.id,
-    ]);
+    await db.query(
+      "DELETE FROM users WHERE id = $1",
+      [req.params.id]
+    );
+
     res.json({ message: "user deleted" });
   } catch (err) {
     next(err);
@@ -83,7 +88,7 @@ export const deleteUser = async (req, res, next) => {
 ====================== */
 export const messages = async (req, res, next) => {
   try {
-    const [rows] = await db.query(`
+    const { rows } = await db.query(`
       SELECT id, name, email, message, created_at
       FROM messages
       ORDER BY created_at DESC

@@ -1,35 +1,48 @@
-import * as service from "../services/booking.service.js";
+import db from "../config/db.js";
 
 /* =========================
    GET BOOKED TABLES
 ========================= */
-export const bookedTables = async (req, res, next) => {
-  try {
-    const { date, time } = req.query;
+export const getBookedTables = async ({ date, time }) => {
+  const { rows } = await db.query(
+    `
+    SELECT table_no
+    FROM bookings
+    WHERE booking_date = $1
+      AND $2 BETWEEN start_time AND end_time
+    `,
+    [date, time]
+  );
 
-    if (!date || !time) {
-      return res.status(400).json({
-        message: "date และ time จำเป็นต้องส่งมา",
-      });
-    }
-
-    const tables = await service.getBookedTables({ date, time });
-    res.json(tables);
-  } catch (err) {
-    next(err);
-  }
+  return rows.map(r => r.table_no);
 };
 
 /* =========================
-   BOOK TABLE
+   CREATE BOOKING
 ========================= */
-export const bookTable = async (req, res, next) => {
-  try {
-    const userId = req.session.user.id;
-    await service.createBooking(userId, req.body);
+export const createBooking = async (userId, data) => {
+  const {
+    table_no,
+    booking_date,
+    start_time,
+    end_time,
+    people,
+  } = data;
 
-    res.json({ message: "booking success" });
-  } catch (err) {
-    next(err);
-  }
+  await db.query(
+    `
+    INSERT INTO bookings
+      (user_id, table_no, booking_date, start_time, end_time, people)
+    VALUES
+      ($1, $2, $3, $4, $5, $6)
+    `,
+    [
+      userId,
+      table_no,
+      booking_date,
+      start_time,
+      end_time,
+      people,
+    ]
+  );
 };

@@ -1,6 +1,12 @@
 export default function errorHandler(err, req, res, next) {
-  console.error(err);
-  res.status(500).json({
+  console.error("❌ ERROR:", err);
+
+  const status = err.status || err.statusCode || 500;
+
+  res.status(status).json({
     message: err.message || "Server Error",
+    ...(process.env.NODE_ENV !== "production" && {
+      stack: err.stack,
+    }),
   });
 }
