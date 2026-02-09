@@ -138,21 +138,6 @@ body {
   background: #faf4ee;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .hero {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .features {
-    grid-template-columns: 1fr;
-  }
-
-  .menu {
-    display: none;
-  }
-}
 /* ===== TABLE ZONE ===== */
 .booking {
   padding: 120px 20px;

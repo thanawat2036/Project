@@ -1,18 +1,28 @@
-import * as booking from "../services/booking.service.js";
+import * as service from "../services/booking.service.js";
 
-export const bookedTables = async (req, res) => {
-  const tables = await booking.getBookedTables(req.query);
-  res.json(tables);
+export const createBooking = async (req, res) => {
+  const userId = req.session.userId;
+  if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+  await service.create(req.body, userId);
+  res.json({ message: "จองโต๊ะสำเร็จ" });
 };
 
-export const book = async (req, res) => {
-  if (!req.session.userId)
-    return res.status(401).json({ message: "Login required" });
+export const myBookings = async (req, res) => {
+  const userId = req.session.userId;
+  const data = await service.findByUser(userId);
+  res.json(data);
+};
 
-  await booking.bookTable({
-    userId: req.session.userId,
-    ...req.body
-  });
+export const cancelBooking = async (req, res) => {
+  const userId = req.session.userId;
+  await service.cancel(req.params.id, userId);
+  res.json({ message: "ยกเลิกการจองแล้ว" });
+};
 
-  res.json({ success: true });
+export const getBookedTables = async (req, res) => {
+  const { date, time } = req.query;
+
+  const result = await service.findBookedTables(date, time);
+  res.json(result);
 };

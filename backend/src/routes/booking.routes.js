@@ -1,9 +1,11 @@
-// booking.routes.js
 import express from "express";
-import { bookedTables, book } from "../controllers/booking.controller.js";
+import * as ctrl from "../controllers/booking.controller.js";
+
 const router = express.Router();
 
-router.get("/booked-tables", bookedTables);
-router.post("/book", book);
+router.post("/", ctrl.createBooking);
+router.get("/my", ctrl.myBookings);
+router.put("/:id/cancel", ctrl.cancelBooking);
+router.get("/", ctrl.getBookedTables);
 
 export default router;

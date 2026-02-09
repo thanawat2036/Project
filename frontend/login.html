@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login | Bourbon.Yard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -10,9 +11,6 @@
 <header class="header">
   <div class="nav">
     <div class="logo">Bourbon.Yard</div>
-    <div class="menu">
-      <a href="index.html">หน้าแรก</a>
-    </div>
   </div>
 </header>
 
@@ -21,30 +19,16 @@
     <h2>เข้าสู่ระบบ</h2>
 
     <form id="loginForm">
-      <div class="form-group">
-        <label>อีเมล</label>
-        <input type="email" id="email" required>
-      </div>
+      <input type="email" id="email" placeholder="อีเมล" required>
+      <input type="password" id="password" placeholder="รหัสผ่าน" required>
 
-      <div class="form-group">
-        <label>รหัสผ่าน</label>
-        <input type="password" id="password" required>
-      </div>
-
-      <button class="btn-primary full" type="submit">
+      <button type="submit" class="btn-primary full">
         เข้าสู่ระบบ
       </button>
     </form>
-
-    <p style="text-align:center;margin-top:16px">
-      ยังไม่มีบัญชี?
-      <a href="registration.html">สมัครสมาชิก</a>
-    </p>
   </div>
 </section>
 
-<!-- 🔥 JS กลาง (login / register / booking / user) -->
 <script src="/js/script.js"></script>
-
 </body>
 </html>

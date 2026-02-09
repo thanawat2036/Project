@@ -2,76 +2,33 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Bourbon.Yard | Admin</title>
+  <title>Admin | Bourbon.Yard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
 <header class="header">
   <div class="nav">
-    <div class="logo">Bourbon.Yard | Admin</div>
-    <div class="menu">
-      <button class="btn-outline" onclick="showSection('bookings')">การจอง</button>
-      <button class="btn-outline" onclick="showSection('users')">สมาชิก</button>
-      <button class="btn-outline" onclick="showSection('messages')">ข้อความ</button>
-      <button id="logout" class="btn-outline">Logout</button>
-    </div>
+    <div class="logo">Admin Panel</div>
   </div>
 </header>
 
 <section class="booking">
-  <div class="booking-card" style="max-width:900px">
+  <h2>รายการจองโต๊ะ</h2>
 
-    <!-- BOOKINGS -->
-    <div id="bookings" class="admin-section">
-      <h2>📅 รายการจองโต๊ะ</h2>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>ลูกค้า</th>
-            <th>โต๊ะ</th>
-            <th>วันที่</th>
-            <th>เวลา</th>
-            <th>คน</th>
-          </tr>
-        </thead>
-        <tbody id="bookingList"></tbody>
-      </table>
-    </div>
-
-    <!-- USERS -->
-    <div id="users" class="admin-section" style="display:none">
-      <h2>👤 สมาชิก</h2>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>ชื่อ</th>
-            <th>Email</th>
-            <th>สิทธิ์</th>
-          </tr>
-        </thead>
-        <tbody id="userList"></tbody>
-      </table>
-    </div>
-
-    <!-- MESSAGES -->
-    <div id="messages" class="admin-section" style="display:none">
-      <h2>📨 ข้อความจากลูกค้า</h2>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>ผู้ส่ง</th>
-            <th>ข้อความ</th>
-            <th>เวลา</th>
-          </tr>
-        </thead>
-        <tbody id="messageList"></tbody>
-      </table>
-    </div>
-
-  </div>
+  <table>
+    <tr>
+      <th>ลูกค้า</th>
+      <th>วัน</th>
+      <th>เวลา</th>
+      <th>สถานะ</th>
+      <th>จัดการ</th>
+    </tr>
+    <!-- ดึงจาก API -->
+  </table>
 </section>
 
-<script src="/js/admin.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>
