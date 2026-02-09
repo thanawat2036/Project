@@ -14,9 +14,11 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false   // ถ้าใช้ https จริง ค่อยเปลี่ยนเป็น true
+    secure: true,
+    sameSite: "none"
   }
 }));
+
 
 app.use("/api", authRoutes);
 app.use("/api", bookingRoutes);
