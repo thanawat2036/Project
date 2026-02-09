@@ -1,54 +1,81 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // check login
+  /* ==========================
+     USER PAGE – CHECK LOGIN
+  ========================== */
   const username = document.getElementById("username");
   if (username) {
     const res = await fetch("/api/auth/me", { credentials: "include" });
-    if (!res.ok) return location.href = "login.html";
+
+    if (!res.ok) {
+      location.href = "login.html";
+      return;
+    }
+
     const user = await res.json();
     username.textContent = "คุณ " + user.name;
   }
 
-  // login
-  document.getElementById("loginForm")?.addEventListener("submit", async e => {
-    e.preventDefault();
-    const email = email.value;
-    const password = password.value;
+  /* ==========================
+     LOGIN
+  ========================== */
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async e => {
+      e.preventDefault();
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email, password })
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password })
+      });
+
+      if (res.ok) {
+        location.href = "user.html";
+      } else {
+        alert("เข้าสู่ระบบไม่สำเร็จ");
+      }
     });
+  }
 
-    if (res.ok) location.href = "user.html";
-    else alert("เข้าสู่ระบบไม่สำเร็จ");
-  });
+  /* ==========================
+     REGISTER
+  ========================== */
+  const registerForm = document.getElementById("registerForm");
+  if (registerForm) {
+    registerForm.addEventListener("submit", async e => {
+      e.preventDefault();
 
-  // register
-  document.getElementById("registerForm")?.addEventListener("submit", async e => {
-    e.preventDefault();
-    await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: name.value,
-        email: email.value,
-        password: password.value
-      })
+      await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value
+        })
+      });
+
+      location.href = "login.html";
     });
-    location.href = "login.html";
-  });
+  }
 
-  /* ===== AUTH CHECK ===== */
+  /* ==========================
+     BOOKING PAGE – CHECK LOGIN
+  ========================== */
+  const tables = document.querySelectorAll(".table");
+  if (tables.length === 0) return;
+
   const auth = await fetch("/api/auth/me", { credentials: "include" });
   if (!auth.ok) {
-    window.location.href = "login.html";
+    location.href = "login.html";
     return;
   }
 
-  const tables = document.querySelectorAll(".table");
   const dateInput = document.getElementById("date");
   const timeInput = document.getElementById("time");
 
@@ -78,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!res.ok) return;
 
-    const booked = await res.json(); // [1,2,5]
+    const booked = await res.json();
 
     tables.forEach(t => {
       const no = Number(t.textContent);
@@ -130,14 +157,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         })
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+      if (!res.ok) throw new Error("จองโต๊ะไม่สำเร็จ");
 
       showToast("🎉 จองโต๊ะสำเร็จ");
       loadBookedTables();
 
-    } catch (err) {
-      alert(err.message);
     } finally {
       loading.classList.remove("active");
       selectedTable = null;
