@@ -31,8 +31,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 
-// default page
-app.get("*", (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "../../frontend/index.html"));
 });
 
