@@ -1,10 +1,9 @@
-import { Router } from "express";
-import * as booking from "../controllers/booking.controller.js";
-import { requireLogin } from "../middlewares/auth.middleware.js";
+// booking.routes.js
+import express from "express";
+import { bookedTables, book } from "../controllers/booking.controller.js";
+const router = express.Router();
 
-const router = Router();
-
-router.get("/booked-tables", booking.bookedTables);
-router.post("/book", requireLogin, booking.bookTable);
+router.get("/booked-tables", bookedTables);
+router.post("/book", book);
 
 export default router;

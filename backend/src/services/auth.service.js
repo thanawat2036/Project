@@ -7,21 +7,25 @@ export async function login({ email, password }) {
     "SELECT * FROM users WHERE email = ?",
     [email]
   );
+};
 
-  if (!rows.length) throw new Error("ไม่พบผู้ใช้");
+export const loginUser = async ({ email, password }) => {
+  const { rows } = await db.query(
+    "SELECT * FROM users WHERE email=$1",
+    [email]
+  );
 
   const user = rows[0];
+  if (!user) return null;
+
   const ok = await bcrypt.compare(password, user.password);
-  if (!ok) throw new Error("รหัสผ่านไม่ถูกต้อง");
+  return ok ? user : null;
+};
 
-  delete user.password;
-  return user;
-}
-
-export async function register({ name, email, password }) {
-  const hash = await bcrypt.hash(password, 10);
-  await db.query(
-    "INSERT INTO users (name,email,password,role) VALUES (?,?,?, 'user')",
-    [name, email, hash]
+export const getUserById = async id => {
+  const { rows } = await db.query(
+    "SELECT id,name,email FROM users WHERE id=$1",
+    [id]
   );
-}
+  return rows[0];
+};

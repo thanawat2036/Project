@@ -1,17 +1,13 @@
-export function requireLogin(req, res, next) {
-  if (!req.session || !req.session.user) {
-    return res.status(401).json({ message: "กรุณาเข้าสู่ระบบ" });
-  }
-  next();
-}
+import jwt from "jsonwebtoken";
 
-export function requireAdmin(req, res, next) {
-  if (
-    !req.session ||
-    !req.session.user ||
-    req.session.user.role !== "admin"
-  ) {
-    return res.status(403).json({ message: "Forbidden" });
+export default (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.sendStatus(401);
+
+  try {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch {
+    res.sendStatus(403);
   }
-  next();
-}
+};

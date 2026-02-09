@@ -1,48 +1,18 @@
-import db from "../config/db.js";
+import * as booking from "../services/booking.service.js";
 
-/* =========================
-   GET BOOKED TABLES
-========================= */
-export const getBookedTables = async ({ date, time }) => {
-  const { rows } = await db.query(
-    `
-    SELECT table_no
-    FROM bookings
-    WHERE booking_date = $1
-      AND $2 BETWEEN start_time AND end_time
-    `,
-    [date, time]
-  );
-
-  return rows.map(r => r.table_no);
+export const bookedTables = async (req, res) => {
+  const tables = await booking.getBookedTables(req.query);
+  res.json(tables);
 };
 
-/* =========================
-   CREATE BOOKING
-========================= */
-export const createBooking = async (userId, data) => {
-  const {
-    table_no,
-    booking_date,
-    start_time,
-    end_time,
-    people,
-  } = data;
+export const book = async (req, res) => {
+  if (!req.session.userId)
+    return res.status(401).json({ message: "Login required" });
 
-  await db.query(
-    `
-    INSERT INTO bookings
-      (user_id, table_no, booking_date, start_time, end_time, people)
-    VALUES
-      ($1, $2, $3, $4, $5, $6)
-    `,
-    [
-      userId,
-      table_no,
-      booking_date,
-      start_time,
-      end_time,
-      people,
-    ]
-  );
+  await booking.bookTable({
+    userId: req.session.userId,
+    ...req.body
+  });
+
+  res.json({ success: true });
 };
