@@ -11,27 +11,32 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// static frontend
-app.use(express.static(path.join(__dirname, "../../frontend")));
-
-// session
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "bourbonyard",
+    name: "bourbonyard.sid",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false   // Render https = true (ถ้าเปิด https)
+    }
   })
 );
+
+// frontend
+app.use(express.static(path.join(__dirname, "../../frontend")));
 
 // api
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 
-app.use((req, res) => {
+// SPA fallback
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../../frontend/index.html"));
 });
 

@@ -24,17 +24,9 @@ export const me = async (req, res) => {
   if (!req.session.userId)
     return res.status(401).json({ message: "Unauthorized" });
 
-  const user = await auth.getUserById(req.session.userId);
-  res.json(user);
+  res.json(await auth.getUserById(req.session.userId));
 };
 
-/* ===== LOGOUT ===== */
 export const logout = (req, res) => {
-  req.session.destroy(err => {
-    if (err)
-      return res.status(500).json({ message: "Logout failed" });
-
-    res.clearCookie("connect.sid"); // สำคัญมากตอน deploy
-    res.json({ success: true });
-  });
+  req.session.destroy(() => res.json({ success: true }));
 };
