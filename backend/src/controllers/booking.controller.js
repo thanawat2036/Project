@@ -1,28 +1,34 @@
-import * as service from "../services/booking.service.js";
+import * as booking from "../services/booking.service.js";
 
 export const createBooking = async (req, res) => {
-  const userId = req.session.userId;
-  if (!userId) return res.status(401).json({ message: "Unauthorized" });
+  if (!req.session.userId) {
+    return res.status(401).json({ message: "กรุณาเข้าสู่ระบบก่อน" });
+  }
 
-  await service.create(req.body, userId);
-  res.json({ message: "จองโต๊ะสำเร็จ" });
+  try {
+    await booking.create({
+      user_id: req.session.userId,
+      date: req.body.date,
+      time: req.body.time,
+      table_no: req.body.table_no,
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 };
 
 export const myBookings = async (req, res) => {
-  const userId = req.session.userId;
-  const data = await service.findByUser(userId);
-  res.json(data);
+  const rows = await booking.findByUser(req.session.userId);
+  res.json(rows);
 };
 
 export const cancelBooking = async (req, res) => {
-  const userId = req.session.userId;
-  await service.cancel(req.params.id, userId);
-  res.json({ message: "ยกเลิกการจองแล้ว" });
-};
-
-export const getBookedTables = async (req, res) => {
-  const { date, time } = req.query;
-
-  const result = await service.findBookedTables(date, time);
-  res.json(result);
+  try {
+    await booking.cancel(req.params.id, req.session.userId);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 };
