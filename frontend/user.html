@@ -2,7 +2,8 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <title>โปรไฟล์ | Bourbon.Yard</title>
+  <title>Bourbon.Yard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -11,31 +12,45 @@
   <div class="nav">
     <div class="logo">Bourbon.Yard</div>
     <div class="menu">
-      <a href="booking.html">จองโต๊ะ</a>
+      <a href="#promo">โปรโมชั่น</a>
+      <a href="#menu">เมนู</a>
+      <a href="booking.html" class="btn-primary">จองโต๊ะ</a>
+      <a href="user.html" class="btn-outline">โปรไฟล์</a>
       <button id="logout" class="btn-outline">Logout</button>
     </div>
   </div>
 </header>
 
-<section class="booking">
-  <div class="booking-card">
-    <h2 id="username">โปรไฟล์</h2>
+<section class="hero">
+  <h1>Welcome to Bourbon.Yard</h1>
+  <p>บาร์สุดพรีเมียม ดนตรีสด อาหารและเครื่องดื่มคุณภาพ</p>
+</section>
 
-    <h3>📜 ประวัติการจอง</h3>
-    <table class="history-table">
-      <thead>
-        <tr>
-          <th>วันที่</th>
-          <th>เวลา</th>
-          <th>โต๊ะ</th>
-          <th>สถานะ</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="bookingList"></tbody>
-    </table>
+<section id="promo" class="features">
+  <div class="feature-card">
+    <h3>🔥 Happy Hour</h3>
+    <p>ลด 20% ทุกวัน 18.00 – 20.00 น.</p>
+  </div>
+  <div class="feature-card">
+    <h3>🎉 Birthday Special</h3>
+    <p>ฟรีเครื่องดื่มวันเกิด</p>
   </div>
 </section>
+
+<section id="menu" class="features">
+  <div class="feature-card">
+    <h3>🥃 Bourbon</h3>
+    <p>Whiskey / Cocktail / Wine</p>
+  </div>
+  <div class="feature-card">
+    <h3>🍔 Food</h3>
+    <p>Steak / Snack / Finger Food</p>
+  </div>
+</section>
+
+<footer class="footer">
+  © 2026 Bourbon.Yard
+</footer>
 
 <script src="/js/script.js"></script>
 </body>

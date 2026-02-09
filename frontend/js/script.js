@@ -208,3 +208,57 @@ logoutBtn?.addEventListener("click", async () => {
   });
   location.href = "login.html";
 });
+
+/* ===== PROFILE PAGE ===== */
+const bookingList = document.getElementById("bookingList");
+
+if (bookingList) {
+  // โหลด user
+  const meRes = await fetch("/api/auth/me", { credentials: "include" });
+  if (!meRes.ok) {
+    location.href = "login.html";
+    return;
+  }
+  const me = await meRes.json();
+  document.getElementById("username").textContent = "คุณ " + me.name;
+
+  // โหลดประวัติการจอง
+  const res = await fetch("/api/bookings/my", { credentials: "include" });
+  const bookings = await res.json();
+
+  bookingList.innerHTML = "";
+
+  bookings.forEach(b => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${b.book_date}</td>
+      <td>${b.book_time}</td>
+      <td>${b.table_no}</td>
+      <td>${b.status}</td>
+      <td>
+        ${
+          b.status === "booked"
+            ? `<button data-id="${b.id}" class="btn-outline cancel-btn">ยกเลิก</button>`
+            : "-"
+        }
+      </td>
+    `;
+
+    bookingList.appendChild(tr);
+  });
+
+  // ปุ่มยกเลิก
+  document.querySelectorAll(".cancel-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("ยืนยันยกเลิกการจอง?")) return;
+
+      await fetch(`/api/bookings/${btn.dataset.id}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+
+      location.reload();
+    });
+  });
+}
