@@ -3,6 +3,7 @@ import {
   createBooking,
   myBookings,
   cancelBooking,
+  getBookedTables,
 } from "../controllers/booking.controller.js";
 
 const router = express.Router();
