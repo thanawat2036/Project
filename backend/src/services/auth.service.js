@@ -1,13 +1,11 @@
-import {db} from "../config/db.js";
+// src/services/auth.service.js
+import db from "../config/db.js";
 import bcrypt from "bcrypt";
 
-export const createUser = async ({ name, email, password }) => {
-  const hash = await bcrypt.hash(password, 10);
-
-  await db.query(
-    `INSERT INTO users (name,email,password)
-     VALUES ($1,$2,$3)`,
-    [name, email, hash]
+export async function login({ email, password }) {
+  const {rows} = await db.query(
+    "SELECT * FROM users WHERE email = ?",
+    [email]
   );
 };
 
