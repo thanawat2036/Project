@@ -8,26 +8,51 @@
 </head>
 <body>
 
+<!-- ===== HEADER ===== -->
 <header class="header">
   <div class="nav">
     <div class="logo">Bourbon.Yard</div>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+    </nav>
   </div>
 </header>
 
-<section class="booking">
+<!-- ===== LOGIN ===== -->
+<main class="booking">
   <div class="booking-card">
     <h2>เข้าสู่ระบบ</h2>
 
     <form id="loginForm">
-      <input type="email" id="email" placeholder="อีเมล" required>
-      <input type="password" id="password" placeholder="รหัสผ่าน" required>
+      <div class="form-group">
+        <input
+          type="email"
+          id="email"
+          placeholder="อีเมล"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <input
+          type="password"
+          id="password"
+          placeholder="รหัสผ่าน"
+          required
+        >
+      </div>
 
       <button type="submit" class="btn-primary full">
         เข้าสู่ระบบ
       </button>
     </form>
+
+    <p style="text-align:center; margin-top:20px;">
+      ยังไม่มีบัญชี?
+      <a href="registration.html">สมัครสมาชิก</a>
+    </p>
   </div>
-</section>
+</main>
 
 <script src="/js/script.js"></script>
 </body>
