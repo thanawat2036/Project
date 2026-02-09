@@ -173,4 +173,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 2500);
   }
+
+  const logoutBtn = document.getElementById("logout");
+logoutBtn?.addEventListener("click", async () => {
+  await fetch("/api/auth/logout", {
+    method: "POST",
+    credentials: "include"
+  });
+  location.href = "login.html";
+});
+
+const nameEl = document.getElementById("p-name");
+const emailEl = document.getElementById("p-email");
+
+if (nameEl && emailEl) {
+  const res = await fetch("/api/auth/me", { credentials: "include" });
+  if (!res.ok) {
+    location.href = "login.html";
+    return;
+  }
+  const user = await res.json();
+  nameEl.textContent = user.name;
+  emailEl.textContent = user.email;
+}
 });
