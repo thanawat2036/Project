@@ -1,5 +1,16 @@
 import * as booking from "../services/booking.service.js";
 
+export const getBookedTables = async (req, res) => {
+  const { date, time } = req.query;
+
+  if (!date || !time) {
+    return res.json([]);
+  }
+
+  const tables = await booking.findBookedTables(date, time);
+  res.json(tables); // [1,2,5]
+};
+
 export const createBooking = async (req, res) => {
   if (!req.session.userId) {
     return res.status(401).json({ message: "กรุณาเข้าสู่ระบบก่อน" });

@@ -16,4 +16,6 @@ router.post("/", createBooking);
 /* ===== CANCEL BOOKING ===== */
 router.put("/:id/cancel", cancelBooking);
 
+router.get("/", getBookedTables);
+
 export default router;

@@ -1,28 +1,40 @@
 import db from "../config/db.js";
 
-/* ===== CREATE BOOKING ===== */
-export const create = async ({ user_id, date, time, table_no }) => {
+export const create = async ({ date, time, table_no }, userId) => {
 
-  // 1. เช็คโต๊ะซ้ำ
-  const check = await db.query(
+  /* ❌ กันโต๊ะซ้ำ */
+  const tableCheck = await db.query(
     `SELECT 1 FROM bookings
-     WHERE book_date=$1 
+     WHERE book_date=$1
      AND book_time=$2
      AND table_no=$3
      AND status='booked'`,
     [date, time, table_no]
   );
 
-  if (check.rowCount > 0) {
-    throw new Error("โต๊ะถูกจองแล้ว");
+  if (tableCheck.rowCount > 0) {
+    throw new Error("โต๊ะนี้ถูกจองแล้ว");
   }
 
-  // 2. บันทึกการจอง
+  /* ❌ กัน user จองหลายโต๊ะเวลาเดียวกัน */
+  const userCheck = await db.query(
+    `SELECT 1 FROM bookings
+     WHERE book_date=$1
+     AND book_time=$2
+     AND user_id=$3
+     AND status='booked'`,
+    [date, time, userId]
+  );
+
+  if (userCheck.rowCount > 0) {
+    throw new Error("คุณได้จองโต๊ะในช่วงเวลานี้แล้ว");
+  }
+
+  /* ✅ บันทึก */
   await db.query(
-    `INSERT INTO bookings 
-      (user_id, book_date, book_time, table_no, status)
+    `INSERT INTO bookings (user_id, book_date, book_time, table_no, status)
      VALUES ($1,$2,$3,$4,'booked')`,
-    [user_id, date, time, table_no]
+    [userId, date, time, table_no]
   );
 };
 
@@ -55,13 +67,12 @@ export const cancel = async (id, user_id) => {
 /* ===== BOOKED TABLES ===== */
 export const findBookedTables = async (date, time) => {
   const { rows } = await db.query(
-    `SELECT table_no 
-     FROM bookings
+    `SELECT table_no FROM bookings
      WHERE book_date=$1
      AND book_time=$2
      AND status='booked'`,
     [date, time]
   );
 
-  return rows.map(r => r.table_no);
+  return rows.map(r => Number(r.table_no));
 };

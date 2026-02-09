@@ -94,24 +94,30 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   /* ===== LOAD BOOKED TABLES ===== */
   async function loadBookedTables() {
-    if (!dateInput.value || !timeInput.value) return;
+  if (!dateInput.value || !timeInput.value) return;
 
-    tables.forEach(t => t.classList.remove("unavailable"));
+  /* reset */
+  tables.forEach(t => {
+    t.classList.remove("unavailable");
+  });
 
-    const res = await fetch(
-      `/api/bookings?date=${dateInput.value}&time=${timeInput.value}`,
-      { credentials: "include" }
-    );
+  const res = await fetch(
+    `/api/bookings?date=${dateInput.value}&time=${timeInput.value}`,
+    { credentials: "include" }
+  );
 
-    if (!res.ok) return;
+  if (!res.ok) return;
 
-    const booked = await res.json();
+  const bookedTables = await res.json(); // [1,2,5]
 
-    tables.forEach(t => {
-      const no = Number(t.textContent);
-      if (booked.includes(no)) t.classList.add("unavailable");
-    });
-  }
+  tables.forEach(t => {
+    const tableNo = Number(t.textContent.trim());
+    if (bookedTables.includes(tableNo)) {
+      t.classList.add("unavailable");
+    }
+  });
+}
+
 
   dateInput.addEventListener("change", loadBookedTables);
   timeInput.addEventListener("change", loadBookedTables);
