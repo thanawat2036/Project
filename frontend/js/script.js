@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      location.href = "index.html"; // หน้าเว็บร้าน
+      location.href = "user.html"; // หน้าเว็บร้าน
     });
   }
 
