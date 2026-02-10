@@ -2,7 +2,6 @@ import express from "express";
 import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
-import { requireAdmin } from "./middlewares/auth.middleware.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
