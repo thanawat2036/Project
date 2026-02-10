@@ -51,7 +51,7 @@ export const getBookedTables = async (req, res) => {
     return res.status(400).json({ message: "date is required" });
   }
 
-  // ❗ ไม่สนเวลา → ถ้าจองวันนั้น ปิดทั้งวัน
-  const tables = await booking.getBookedTables(date);
+  // ✅ เรียกชื่อ service ให้ตรง
+  const tables = await booking.getBookedTablesByDate(date);
   res.json(tables);
 };

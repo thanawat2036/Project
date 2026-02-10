@@ -36,21 +36,17 @@ export const create = async ({ date, time, table_no }, userId) => {
 /* ===============================
    GET BOOKED TABLES (ทั้งวัน)
 ================================ */
-export const getBookedTables = async (date) => {
+export const getBookedTablesByDate = async (date) => {
   const { rows } = await db.query(
     `
     SELECT table_no FROM bookings
     WHERE book_date=$1 AND status='booked'
-    UNION
-    SELECT table_no FROM table_closures
-    WHERE close_date=$1
     `,
     [date]
   );
 
   return rows.map(r => r.table_no);
 };
-
 
 /* ===============================
    CANCEL BOOKING

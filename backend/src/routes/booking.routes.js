@@ -8,17 +8,10 @@ import {
 
 const router = express.Router();
 
-/* ===== CREATE BOOKING ===== */
 router.post("/", createBooking);
-
-/* ===== GET MY BOOKINGS ===== */
-router.get("/my", getMyBookings);
-
-/* ===== CANCEL ===== */
+router.get("/me", getMyBookings);
 router.delete("/:id", cancelBooking);
-
-/* ===== GET BOOKED TABLES ===== */
-router.get("/booked", getBookedTables);
+router.get("/booked-tables", getBookedTables);
 
 export default router;
 router.get("/", (req, res) => {
