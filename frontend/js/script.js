@@ -47,9 +47,18 @@ function initLogin() {
       return;
     }
 
-    location.href = "user.html";
+    // ⭐ สำคัญมาก
+    const data = await res.json();
+    console.log("ROLE =", data.role);
+
+    if (data.role === "admin") {
+      location.href = "admin.html";
+    } else {
+      location.href = "user.html";
+    }
   });
 }
+
 
 /* ===============================
    REGISTER
