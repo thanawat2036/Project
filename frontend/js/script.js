@@ -18,28 +18,30 @@ document.addEventListener("DOMContentLoaded", async () => {
      LOGIN
   ================================ */
   const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    loginForm.addEventListener("submit", async e => {
-      e.preventDefault();
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
+if (loginForm) {
+  loginForm.addEventListener("submit", async e => {
+    e.preventDefault();
 
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password })
-      });
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-      if (!res.ok) {
-        alert("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-        return;
-      }
-
-      location.href = "user.html";
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email, password })
     });
-  }
+
+    if (!res.ok) {
+      alert("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      return;
+    }
+
+    location.href = "user.html";
+  });
+}
+
 
   /* ===============================
      REGISTER

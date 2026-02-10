@@ -28,5 +28,8 @@ export const me = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  req.session.destroy(() => res.json({ success: true }));
+  req.session.destroy(() => {
+    res.clearCookie("connect.sid");
+    res.json({ success: true });
+  });
 };
