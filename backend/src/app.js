@@ -2,6 +2,7 @@ import express from "express";
 import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
+import { requireAdmin } from "./middlewares/auth.middleware.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
@@ -58,6 +59,9 @@ app.use("/api/admin/users", userAdminRoutes);
 ================================ */
 app.get("/", (req, res) => {
   res.redirect("/login.html");
+});
+app.get("/admin", requireAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, "../../frontend/admin.html"));
 });
 
 /* ===============================

@@ -8,9 +8,11 @@ import {
 
 const router = express.Router();
 
-router.post("/", createBooking);
-router.get("/me", getMyBookings);
-router.delete("/:id", cancelBooking);
+import { requireAuth } from "../middlewares/auth.middleware.js";
+
+router.post("/", requireAuth, createBooking);
+router.get("/me", requireAuth, getMyBookings);
+router.delete("/:id", requireAuth, cancelBooking);
 router.get("/booked-tables", getBookedTables);
 
 export default router;
