@@ -17,6 +17,7 @@ const __dirname = path.dirname(__filename);
 /* ===============================
    MIDDLEWARE
 ================================ */
+app.set("trust proxy", 1); // ถ้าใช้กับ Heroku ต้องตั้งค่านี้
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
