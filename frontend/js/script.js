@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ===============================
-   AUTH CHECK (HEADER USERNAME)
+   AUTH HEADER
 ================================ */
 async function initAuthHeader() {
   const usernameEl = document.getElementById("username");
@@ -115,21 +115,31 @@ async function initBookingPage() {
   const loading = document.getElementById("loadingOverlay");
 
   let selectedTable = null;
+  let hasBooked = false;
 
   async function loadBookedTables() {
     if (!dateInput.value || !timeInput.value) return;
+
+    tables.forEach(t => {
+      t.classList.remove("unavailable");
+      t.classList.remove("selected");
+    });
 
     const res = await fetch(
       `/api/bookings?date=${dateInput.value}&time=${timeInput.value}`,
       { credentials: "include" }
     );
+
     if (!res.ok) return;
 
-    const booked = await res.json();
+    const bookedData = await res.json();
+    const bookedTables = bookedData.map(b => b.table_no);
 
     tables.forEach(t => {
       const no = Number(t.textContent.trim());
-      t.classList.toggle("unavailable", booked.includes(no));
+      if (bookedTables.includes(no)) {
+        t.classList.add("unavailable"); // 🔴
+      }
     });
   }
 
@@ -138,7 +148,15 @@ async function initBookingPage() {
 
   tables.forEach(table => {
     table.addEventListener("click", () => {
-      if (table.classList.contains("unavailable")) return;
+      if (table.classList.contains("unavailable")) {
+        alert("โต๊ะนี้ถูกจองแล้ว");
+        return;
+      }
+
+      if (hasBooked) {
+        alert("คุณจองไปแล้วในช่วงเวลานี้");
+        return;
+      }
 
       if (!dateInput.value || !timeInput.value) {
         alert("กรุณาเลือกวันที่และเวลา");
@@ -180,6 +198,7 @@ async function initBookingPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
+      hasBooked = true;
       showToast("🎉 จองโต๊ะสำเร็จ");
       await loadBookedTables();
 
@@ -233,7 +252,8 @@ async function initProfilePage() {
               : "-"
           }
         </td>
-      </tr>`;
+      </tr>
+    `;
   });
 
   document.querySelectorAll(".cancel-btn").forEach(btn => {

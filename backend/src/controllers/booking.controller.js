@@ -26,6 +26,12 @@ export const cancelBooking = async (req, res) => {
 
 export const getBookedTables = async (req, res) => {
   const { date, time } = req.query;
-  const tables = await booking.findBookedTables(date, time);
+
+  if (!date || !time) {
+    return res.json([]);
+  }
+
+  const tables = await bookingService.findBookedTables(date, time);
   res.json(tables);
 };
+
