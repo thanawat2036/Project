@@ -3,51 +3,59 @@ import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import promoRoutes from "./routes/promo.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 
 const app = express();
 
+/* ===============================
+   FIX __dirname (ESM)
+================================ */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/* ===============================
+   MIDDLEWARE
+================================ */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    name: "bourbonyard.sid",
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "bourbon-yard-secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false   // Render https = true (ถ้าเปิด https)
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax"
     }
   })
 );
 
-// frontend
+/* ===============================
+   STATIC FILES (⭐ สำคัญมาก)
+================================ */
 app.use(express.static(path.join(__dirname, "../../frontend")));
 
-// api
+/* ===============================
+   API ROUTES
+================================ */
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
-app.use("/api/promos", promoRoutes);
 
-app.use(express.static(frontendPath));
+/* ===============================
+   ROOT ROUTE
+================================ */
+app.get("/", (req, res) => {
+  res.redirect("/login.html");
+});
 
-// pages
-const serve = (file) => (req, res) =>
-  res.sendFile(path.join(frontendPath, file));
-
-app.get("/", serve("user.html"));
-app.get("/user.html", serve("user.html"));
-app.get("/profile.html", serve("profile.html"));
-app.get("/booking.html", serve("booking.html"));
-app.get("/wine.html", serve("wine.html"));
-app.get("/admin.html", serve("admin.html"));
+/* ===============================
+   FALLBACK (404)
+================================ */
+app.use((req, res) => {
+  res.status(404).send("404 Not Found");
+});
 
 export default app;
