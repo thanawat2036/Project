@@ -20,10 +20,11 @@
 
 <section class="booking">
   <div class="booking-card">
-    <h2>โปรไฟล์ของฉัน</h2>
-    <p id="username"></p>
 
-    <h3 style="margin-top:30px">ประวัติการจอง</h3>
+    <h2>โปรไฟล์ของฉัน</h2>
+    <p class="subtitle" id="username">ผู้ใช้งาน</p>
+
+    <h3 style="margin-top:32px">ประวัติการจอง</h3>
 
     <table class="admin-table">
       <thead>
@@ -35,8 +36,20 @@
           <th>จัดการ</th>
         </tr>
       </thead>
-      <tbody id="bookingList"></tbody>
+      <tbody id="bookingList">
+        <!-- JS ใส่ข้อมูลตรงนี้ -->
+        <!--
+        <tr>
+          <td>10/02/2026</td>
+          <td>19:00</td>
+          <td>A3</td>
+          <td>ยืนยัน</td>
+          <td><button class="btn-outline">ยกเลิก</button></td>
+        </tr>
+        -->
+      </tbody>
     </table>
+
   </div>
 </section>
 
