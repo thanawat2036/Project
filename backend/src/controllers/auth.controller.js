@@ -21,7 +21,7 @@ export const login = async (req, res) => {
     return res.status(401).json({ message: "Login failed" });
 
   req.session.userId = user.id;
-  req.session.isAdmin = user.role === "admin";
+  req.session.isAdmin = user.role?.toLowerCase() === "admin";
 
   res.json({
     success: true,
