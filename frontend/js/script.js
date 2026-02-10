@@ -180,10 +180,9 @@ async function initBookingPage() {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
-        booking_date: dateInput.value,
-        booking_time: popupTime.value,
-        table_no: Number(selectedTable.textContent.trim()),
-        people: 1 // ใส่ default ไปก่อน (กัน backend error)
+        date: dateInput.value,
+        time: popupTime.value,
+        table_no: Number(selectedTable.textContent.trim())
       })
     });
 
