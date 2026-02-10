@@ -76,7 +76,6 @@ body {
   display: inline-block;
   padding: 14px 36px;
   border-radius: 999px;
-  background: #61423f;
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -543,35 +542,60 @@ body {
 }
 
 .contact-admin {
-  margin-top: 60px;
-  padding: 80px 20px;
-  background: #faf4ee;
-  color: #fff;
-  text-align: center;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #fffaf5;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
 .contact-admin h2 {
-  margin-bottom: 10px;
-  color: #ccc;
+  margin-bottom: 16px;
+  font-size: 22px;
+  color: #3b2f2f;
+  text-align: center;
 }
 
-.contact-admin p {
-  color: #ccc;
-  margin-bottom: 30px;
-}
-
-#contactForm {
-  max-width: 500px;
-  margin: auto;
-}
-
-#contactForm textarea {
+.contact-admin textarea {
   width: 100%;
-  height: 120px;
-  padding: 15px;
-  border-radius: 10px;
-  border: none;
+  min-height: 120px;
+  padding: 14px 16px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 1.5px solid #d6cfc7;
   resize: none;
-  font-family: "Prompt", sans-serif;
-  margin-bottom: 20px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
 }
+
+.contact-admin textarea:focus {
+  border-color: #8b5e3c;
+  box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.15);
+}
+
+.contact-admin button {
+  margin-top: 16px;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5e3c, #6f4423);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+
+.contact-admin button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  opacity: 0.95;
+}
+
+.contact-admin button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
