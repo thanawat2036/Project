@@ -23,7 +23,10 @@ export const login = async (req, res) => {
   req.session.userId = user.id;
   req.session.isAdmin = user.role === "admin";
 
-  res.json({ success: true });
+  res.json({
+    success: true,
+    role: user.role   // ⭐ สำคัญ
+  });
 };
 
 /* ===============================
