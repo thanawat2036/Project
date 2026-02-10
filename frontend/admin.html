@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin | Bourbon.Yard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="/css/style.css">
@@ -10,25 +10,77 @@
 
 <header class="header">
   <div class="nav">
-    <div class="logo">Admin Panel</div>
+    <div class="logo">Bourbon.Yard | Admin</div>
+    <div class="menu">
+      <a href="user.html">หน้าเว็บลูกค้า</a>
+      <button id="logout" class="btn-outline">Logout</button>
+    </div>
   </div>
 </header>
 
 <section class="booking">
-  <h2>รายการจองโต๊ะ</h2>
+  <div class="booking-card">
 
-  <table>
-    <tr>
-      <th>ลูกค้า</th>
-      <th>วัน</th>
-      <th>เวลา</th>
-      <th>สถานะ</th>
-      <th>จัดการ</th>
-    </tr>
-    <!-- ดึงจาก API -->
-  </table>
+    <h2>จัดการโปรโมชั่น</h2>
+    <p class="subtitle">แก้ไขข้อความและรูปภาพที่แสดงหน้าเว็บ</p>
+
+    <!-- PROMO TEXT -->
+    <div class="form-group">
+      <label>หัวข้อโปรโมชั่น</label>
+      <input type="text" id="promoTitle" placeholder="เช่น Happy Hour">
+    </div>
+
+    <div class="form-group">
+      <label>รายละเอียดโปรโมชั่น</label>
+      <input type="text" id="promoDetail" placeholder="เช่น ลด 20% เวลา 18.00 – 20.00">
+    </div>
+
+    <!-- IMAGE UPLOAD -->
+    <div class="form-group">
+      <label>เปลี่ยนรูป Highlight</label>
+      <input type="file" id="promoImage" accept="image/*">
+    </div>
+
+    <button class="btn-primary full" onclick="savePromo()">
+      บันทึกโปรโมชั่น
+    </button>
+
+  </div>
 </section>
 
-<script src="/js/script.js"></script>
+<!-- ADMIN TABLE -->
+<section class="booking">
+  <div class="booking-card">
+    <h2>โปรโมชั่นปัจจุบัน</h2>
+
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>หัวข้อ</th>
+          <th>รายละเอียด</th>
+          <th>รูปภาพ</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Happy Hour</td>
+          <td>ลด 20% ทุกวัน 18.00 – 20.00</td>
+          <td>asset.jpeg</td>
+          <td>
+            <button class="btn-outline">แก้ไข</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+function savePromo() {
+  alert("บันทึกโปรโมชั่นเรียบร้อย (ตัวอย่าง Frontend)");
+}
+</script>
+
 </body>
 </html>
