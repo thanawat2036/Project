@@ -3,6 +3,7 @@ import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import promoRoutes from "./routes/promo.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 
@@ -34,6 +35,7 @@ app.use(express.static(path.join(__dirname, "../../frontend")));
 // api
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/promos", promoRoutes);
 
 // SPA fallback
 app.use((req, res) => {
