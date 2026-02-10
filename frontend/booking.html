@@ -75,11 +75,17 @@
   <div class="popup-card">
     <h3>จองโต๊ะหมายเลข <span id="popupTableNo"></span></h3>
 
-    <label>จำนวนคน</label>
-    <input type="number" id="popupPeople" min="1" value="1">
+    <label>ชื่อผู้จอง</label>
+      <input type="text" id="popupName" placeholder="ชื่อ">
 
-    <label>เวลา</label>
-    <input type="time" id="popupTime" min="17:00" max="23:00">
+      <label>เบอร์โทร</label>
+      <input type="text" id="popupPhone" placeholder="เบอร์โทร">
+
+      <label>จำนวนคน</label>
+      <input type="number" id="popupPeople" min="1" value="1">
+
+      <label>เวลา</label>
+      <input type="time" id="popupTime" min="17:00" max="23:00">
 
     <div class="popup-actions">
       <button type="button" id="cancelTable">ยกเลิก</button>

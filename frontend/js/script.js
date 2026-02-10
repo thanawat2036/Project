@@ -165,36 +165,37 @@ async function initBookingPage() {
   };
 
   confirmBtn.onclick = async () => {
-    if (!selectedTable) return;
+  if (!selectedTable) return;
 
-    popup.classList.remove("active");
-    loading.classList.add("active");
+  popup.classList.remove("active");
+  loading.classList.add("active");
 
-    try {
-      const res = await fetch("/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          date: dateInput.value,
-          time: popupTime.value,
-          table_no: Number(selectedTable.dataset.table)
-        })
-      });
+  try {
+    const res = await fetch("/api/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        booking_date: dateInput.value,
+        booking_time: popupTime.value,
+        table_no: Number(selectedTable.dataset.table),
+        people: 1 // ใส่ default ไปก่อน (กัน backend error)
+      })
+    });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "จองไม่สำเร็จ");
 
-      showToast("🎉 จองโต๊ะสำเร็จ");
-      await loadBookedTables();
+    showToast("🎉 จองโต๊ะสำเร็จ");
+    await loadBookedTables();
 
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      loading.classList.remove("active");
-      selectedTable = null;
-    }
-  };
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    loading.classList.remove("active");
+    selectedTable = null;
+  }
+};
 
   function showToast(msg) {
     toast.textContent = msg;
