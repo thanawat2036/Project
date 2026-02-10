@@ -8,5 +8,5 @@ export function adminMiddleware(req, res, next) {
   }
 
   next();
+  console.log("SESSION:", req.session);
 }
-console.log("SESSION:", req.session);
