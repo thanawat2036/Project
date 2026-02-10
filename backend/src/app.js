@@ -59,7 +59,7 @@ app.use("/api/admin/users", userAdminRoutes);
 app.get("/", (req, res) => {
   res.redirect("/login.html");
 });
-app.get("/admin", requireAdmin, (req, res) => {
+app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "../../frontend/admin.html"));
 });
 
