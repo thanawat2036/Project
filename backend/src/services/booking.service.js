@@ -81,3 +81,5 @@ export const findByUser = async (userId) => {
   );
   return rows;
 };
+
+console.log("CREATE BOOKING:", data);

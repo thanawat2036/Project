@@ -165,7 +165,11 @@ async function initBookingPage() {
   };
 
   confirmBtn.onclick = async () => {
-  if (!selectedTable) return;
+  console.log("DEBUG:", {
+    date: dateInput.value,
+    time: popupTime.value,
+    table_no: selectedTable.dataset.table
+  });
 
   popup.classList.remove("active");
   loading.classList.add("active");
@@ -178,7 +182,7 @@ async function initBookingPage() {
       body: JSON.stringify({
         booking_date: dateInput.value,
         booking_time: popupTime.value,
-        table_no: Number(selectedTable.dataset.table),
+        table_no: Number(selectedTable.textContent.trim()),
         people: 1 // ใส่ default ไปก่อน (กัน backend error)
       })
     });
