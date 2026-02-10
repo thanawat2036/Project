@@ -37,9 +37,17 @@ app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/promos", promoRoutes);
 
-// SPA fallback
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "../user.html"));
-});
+app.use(express.static(frontendPath));
+
+// pages
+const serve = (file) => (req, res) =>
+  res.sendFile(path.join(frontendPath, file));
+
+app.get("/", serve("user.html"));
+app.get("/user.html", serve("user.html"));
+app.get("/profile.html", serve("profile.html"));
+app.get("/booking.html", serve("booking.html"));
+app.get("/wine.html", serve("wine.html"));
+app.get("/admin.html", serve("admin.html"));
 
 export default app;
