@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-import { requireAuth } from "../middlewares/auth.middleware.js";
+import  requireAuth  from "../middlewares/auth.middleware.js";
 
 router.post("/", requireAuth, createBooking);
 router.get("/me", requireAuth, getMyBookings);
