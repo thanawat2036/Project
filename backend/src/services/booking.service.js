@@ -36,7 +36,7 @@ export const create = async ({ date, time, table_no }, userId) => {
 /* ===============================
    GET BOOKED TABLES (ทั้งวัน)
 ================================ */
-export const getBookedTablesByDate = async (date) => {
+export const getBookedTables = async (date) => {
   const { rows } = await db.query(
     `
     SELECT table_no FROM bookings

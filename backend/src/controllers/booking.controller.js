@@ -52,6 +52,6 @@ export const getBookedTables = async (req, res) => {
   }
 
   // ❗ ไม่สนเวลา → ถ้าจองวันนั้น ปิดทั้งวัน
-  const tables = await booking.getBookedTablesByDate(date);
+  const tables = await booking.getBookedTables(date);
   res.json(tables);
 };
