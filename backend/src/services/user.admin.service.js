@@ -5,7 +5,7 @@ import db from "../config/db.js";
 ================================ */
 export const getAll = async () => {
   const [rows] = await db.query(`
-    SELECT id, username, email, role, created_at
+    SELECT id, name, email, role, created_at
     FROM users
     ORDER BY created_at DESC
   `);
