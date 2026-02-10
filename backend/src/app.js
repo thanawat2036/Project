@@ -68,3 +68,5 @@ app.use((req, res) => {
 });
 
 export default app;
+console.log("BOOKING ROUTE LOADED");
+console.log(bookingRoutes);

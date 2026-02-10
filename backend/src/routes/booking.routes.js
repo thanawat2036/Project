@@ -21,3 +21,6 @@ router.delete("/:id", cancelBooking);
 router.get("/booked", getBookedTables);
 
 export default router;
+router.get("/", (req, res) => {
+  res.json({ ok: true });
+});
