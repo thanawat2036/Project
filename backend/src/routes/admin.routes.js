@@ -1,19 +1,20 @@
-import { Router } from "express";
+import express from "express";
 import * as admin from "../controllers/admin.controller.js";
-import { requireAdmin } from "../middlewares/auth.middleware.js";
 
-const router = Router();
+const router = express.Router();
 
-// ต้อง login + เป็น admin เท่านั้น
-router.use(requireAdmin);
+/* ===== TABLE MANAGEMENT ===== */
+router.post("/close-table", admin.closeTable);
+router.post("/open-table", admin.openTable);
 
-router.get("/bookings", admin.bookings);
-router.delete("/bookings/:id", admin.deleteBooking);
+/* ===== BOOKINGS ===== */
+router.get("/bookings", admin.getAllBookings);
 
-router.get("/users", admin.users);
-router.put("/users/role", admin.changeRole);
-router.delete("/users/:id", admin.deleteUser);
+/* ===== USERS ===== */
+router.get("/users", admin.getUsers);
 
-router.get("/messages", admin.messages);
+/* ===== MESSAGES ===== */
+router.get("/messages", admin.getMessages);
+router.post("/reply/:id", admin.replyMessage);
 
 export default router;

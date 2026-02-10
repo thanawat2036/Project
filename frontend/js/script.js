@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initRegister();
   initBookingPage();
   initProfilePage();
+  initSendMessage();
   initLogout();
 });
 
@@ -76,7 +77,6 @@ function initRegister() {
     });
 
     const data = await res.json();
-
     if (!res.ok) {
       alert(data.message || "สมัครสมาชิกไม่สำเร็จ");
       return;
@@ -88,7 +88,7 @@ function initRegister() {
 }
 
 /* ===============================
-   BOOKING PAGE
+   BOOKING PAGE (ปิดโต๊ะทั้งวัน)
 ================================ */
 async function initBookingPage() {
   const tables = document.querySelectorAll(".table");
@@ -105,7 +105,6 @@ async function initBookingPage() {
 
   const popup = document.getElementById("tablePopup");
   const popupTableNo = document.getElementById("popupTableNo");
-  const popupPeople = document.getElementById("popupPeople");
   const popupTime = document.getElementById("popupTime");
 
   const cancelBtn = document.getElementById("cancelTable");
@@ -115,46 +114,36 @@ async function initBookingPage() {
   const loading = document.getElementById("loadingOverlay");
 
   let selectedTable = null;
-  let hasBooked = false;
 
   async function loadBookedTables() {
-    if (!dateInput.value || !timeInput.value) return;
+    if (!dateInput.value) return;
 
-    tables.forEach(t => {
-      t.classList.remove("unavailable");
-      t.classList.remove("selected");
-    });
+    tables.forEach(t =>
+      t.classList.remove("unavailable", "selected")
+    );
 
     const res = await fetch(
-      `/api/bookings?date=${dateInput.value}&time=${timeInput.value}`,
+      `/api/bookings/booked-tables?date=${dateInput.value}`,
       { credentials: "include" }
     );
 
     if (!res.ok) return;
-
-    const bookedData = await res.json();
-    const bookedTables = bookedData.map(b => b.table_no);
+    const bookedTables = await res.json();
 
     tables.forEach(t => {
-      const no = Number(t.textContent.trim());
+      const no = Number(t.dataset.table);
       if (bookedTables.includes(no)) {
-        t.classList.add("unavailable"); // 🔴
+        t.classList.add("unavailable");
       }
     });
   }
 
   dateInput.addEventListener("change", loadBookedTables);
-  timeInput.addEventListener("change", loadBookedTables);
 
   tables.forEach(table => {
     table.addEventListener("click", () => {
       if (table.classList.contains("unavailable")) {
-        alert("โต๊ะนี้ถูกจองแล้ว");
-        return;
-      }
-
-      if (hasBooked) {
-        alert("คุณจองไปแล้วในช่วงเวลานี้");
+        alert("โต๊ะนี้ถูกจองแล้วทั้งวัน");
         return;
       }
 
@@ -164,8 +153,7 @@ async function initBookingPage() {
       }
 
       selectedTable = table;
-      popupTableNo.textContent = table.textContent;
-      popupPeople.value = 1;
+      popupTableNo.textContent = table.dataset.table;
       popupTime.value = timeInput.value;
       popup.classList.add("active");
     });
@@ -190,15 +178,13 @@ async function initBookingPage() {
         body: JSON.stringify({
           date: dateInput.value,
           time: popupTime.value,
-          table_no: Number(selectedTable.textContent),
-          people: popupPeople.value
+          table_no: Number(selectedTable.dataset.table)
         })
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
-      hasBooked = true;
       showToast("🎉 จองโต๊ะสำเร็จ");
       await loadBookedTables();
 
@@ -233,7 +219,7 @@ async function initProfilePage() {
   const me = await meRes.json();
   document.getElementById("username").textContent = "คุณ " + me.name;
 
-  const res = await fetch("/api/bookings/my", { credentials: "include" });
+  const res = await fetch("/api/bookings/me", { credentials: "include" });
   const bookings = await res.json();
 
   bookingList.innerHTML = "";
@@ -242,7 +228,7 @@ async function initProfilePage() {
     bookingList.innerHTML += `
       <tr>
         <td>${b.book_date}</td>
-        <td>${b.book_time}</td>
+        <td>${b.book_time ?? "-"}</td>
         <td>${b.table_no}</td>
         <td>${b.status}</td>
         <td>
@@ -266,6 +252,39 @@ async function initProfilePage() {
       location.reload();
     };
   });
+}
+
+/* ===============================
+   SEND MESSAGE (FIXED)
+================================ */
+function initSendMessage() {
+  const sendBtn = document.getElementById("sendMsg");
+  const msgInput = document.getElementById("userMessage");
+  if (!sendBtn || !msgInput) return;
+
+  sendBtn.onclick = async () => {
+    const message = msgInput.value.trim();
+    if (!message) {
+      alert("กรุณาพิมพ์ข้อความ");
+      return;
+    }
+
+    const res = await fetch("/api/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ message })
+    });
+
+    if (!res.ok) {
+      alert("กรุณาเข้าสู่ระบบ");
+      location.href = "login.html";
+      return;
+    }
+
+    alert("ส่งข้อความแล้ว");
+    msgInput.value = "";
+  };
 }
 
 /* ===============================

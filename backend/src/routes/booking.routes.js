@@ -8,9 +8,12 @@ import {
 
 const router = express.Router();
 
-router.get("/", getBookedTables);              // ?date=&time=
-router.post("/", createBooking);               // จองโต๊ะ
-router.get("/me", getMyBookings);               // ⭐ ประวัติฉัน
-router.delete("/:id", cancelBooking);           // ⭐ ยกเลิก
+router.get("/booked-tables", getBookedTables);
+
+router.post("/", createBooking);
+
+router.get("/me", getMyBookings);
+
+router.delete("/:id", cancelBooking);
 
 export default router;
