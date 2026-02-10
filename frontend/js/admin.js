@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   initAuth();
   loadBookings();
-  loadUsers();
-  loadMessages();
+  loadTables();
 });
 
 /* =======================
@@ -28,166 +27,96 @@ async function loadBookings() {
   const tbody = document.getElementById("bookingTable");
   if (!tbody) return;
 
-  const res = await fetch("/api/admin/bookings", {
+  try {
+    const res = await fetch("/api/bookings", {
+      credentials: "include"
+    });
+
+    if (!res.ok) throw new Error("โหลดข้อมูลไม่สำเร็จ");
+
+    const data = await res.json();
+    tbody.innerHTML = "";
+
+    data.forEach(b => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${b.booking_date}</td>
+          <td>${b.start_time} - ${b.end_time}</td>
+          <td>${b.table_no}</td>
+          <td>${b.customer}</td>
+          <td>${b.people}</td>
+          <td>
+            <button onclick="cancelBooking(${b.id})">ยกเลิก</button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML =
+      `<tr><td colspan="6">โหลดข้อมูลไม่สำเร็จ</td></tr>`;
+  }
+}
+
+async function cancelBooking(id) {
+  if (!confirm("ยืนยันยกเลิกการจองนี้?")) return;
+
+  await fetch(`/api/bookings/${id}/cancel`, {
+    method: "PUT",
     credentials: "include"
   });
 
-  if (!res.ok) {
-    tbody.innerHTML = `<tr><td colspan="5">โหลดข้อมูลไม่สำเร็จ</td></tr>`;
-    return;
-  }
-
-  const data = await res.json();
-  tbody.innerHTML = "";
-
-  data.forEach(b => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${b.book_date}</td>
-        <td>${b.book_time ?? "-"}</td>
-        <td>${b.table_no}</td>
-        <td>${b.name}</td>
-        <td>${b.status}</td>
-      </tr>
-    `;
-  });
+  loadBookings();
 }
 
 /* =======================
-   CLOSE / OPEN TABLE
+   TABLES
 ======================= */
-const closeDate = document.getElementById("closeDate");
-const tableNo = document.getElementById("tableNo");
-
-document.getElementById("closeTableBtn")?.addEventListener("click", async () => {
-  if (!closeDate.value || !tableNo.value) {
-    alert("กรุณากรอกวันที่และหมายเลขโต๊ะ");
-    return;
-  }
-
-  await fetch("/api/admin/close-table", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({
-      date: closeDate.value,
-      table_no: Number(tableNo.value)
-    })
-  });
-
-  alert("ปิดโต๊ะเรียบร้อย");
-  loadBookings();
-});
-
-document.getElementById("openTableBtn")?.addEventListener("click", async () => {
-  if (!closeDate.value || !tableNo.value) {
-    alert("กรุณากรอกวันที่และหมายเลขโต๊ะ");
-    return;
-  }
-
-  await fetch("/api/admin/open-table", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({
-      date: closeDate.value,
-      table_no: Number(tableNo.value)
-    })
-  });
-
-  alert("เปิดโต๊ะเรียบร้อย");
-  loadBookings();
-});
-
-/* =======================
-   USERS
-======================= */
-async function loadUsers() {
-  const tbody = document.getElementById("userTable");
+async function loadTables() {
+  const tbody = document.getElementById("tableTable");
   if (!tbody) return;
 
-  const res = await fetch("/api/admin/users", {
-    credentials: "include"
-  });
+  try {
+    const res = await fetch("/api/tables", {
+      credentials: "include"
+    });
 
-  if (!res.ok) {
-    tbody.innerHTML = `<tr><td colspan="3">โหลดผู้ใช้ไม่สำเร็จ</td></tr>`;
-    return;
+    if (!res.ok) throw new Error("โหลดโต๊ะไม่สำเร็จ");
+
+    const tables = await res.json();
+    tbody.innerHTML = "";
+
+    tables.forEach(t => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${t.table_no}</td>
+          <td>${t.status}</td>
+          <td>
+            <button onclick="openTable(${t.id})">เปิด</button>
+            <button onclick="closeTable(${t.id})">ปิด</button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML =
+      `<tr><td colspan="3">โหลดข้อมูลโต๊ะไม่สำเร็จ</td></tr>`;
   }
-
-  const users = await res.json();
-  tbody.innerHTML = "";
-
-  users.forEach(u => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${u.name}</td>
-        <td>${u.email}</td>
-        <td>
-          <button class="btn-outline" onclick="deleteUser(${u.id})">ลบ</button>
-        </td>
-      </tr>
-    `;
-  });
 }
 
-async function deleteUser(id) {
-  if (!confirm("ยืนยันลบผู้ใช้คนนี้?")) return;
-
-  await fetch(`/api/admin/users/${id}`, {
-    method: "DELETE",
+async function openTable(id) {
+  await fetch(`/api/tables/${id}/open`, {
+    method: "PUT",
     credentials: "include"
   });
-
-  loadUsers();
+  loadTables();
 }
 
-/* =======================
-   MESSAGES
-======================= */
-async function loadMessages() {
-  const box = document.getElementById("messageList");
-  if (!box) return;
-
-  const res = await fetch("/api/messages", {
+async function closeTable(id) {
+  await fetch(`/api/tables/${id}/close`, {
+    method: "PUT",
     credentials: "include"
   });
-
-  if (!res.ok) {
-    box.innerHTML = "<p>โหลดข้อความไม่สำเร็จ</p>";
-    return;
-  }
-
-  const msgs = await res.json();
-  box.innerHTML = "";
-
-  msgs.forEach(m => {
-    box.innerHTML += `
-      <div class="message">
-        <p><b>${m.name}</b>: ${m.message}</p>
-        <textarea id="reply-${m.id}" placeholder="ตอบกลับ...">${m.reply ?? ""}</textarea>
-        <button class="btn-primary" onclick="replyMessage(${m.id})">ส่ง</button>
-      </div>
-    `;
-  });
-}
-
-async function replyMessage(id) {
-  const replyInput = document.getElementById(`reply-${id}`);
-  const reply = replyInput.value.trim();
-
-  if (!reply) {
-    alert("กรุณาพิมพ์ข้อความตอบกลับ");
-    return;
-  }
-
-  await fetch(`/api/messages/reply/${id}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ reply })
-  });
-
-  alert("ตอบกลับแล้ว");
-  loadMessages();
+  loadTables();
 }
