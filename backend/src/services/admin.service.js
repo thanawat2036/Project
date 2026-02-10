@@ -1,9 +1,16 @@
-import  db  from "../config/db.js";
+import db from "../config/db.js";
 
-export const getBookings = async () => {
-  const {rows} = await db.query(`
-    SELECT b.id, u.name customer, b.table_no,
-           b.booking_date, b.start_time, b.end_time, b.people
+/* ===== BOOKINGS ===== */
+export const getAllBookings = async () => {
+  const { rows } = await db.query(`
+    SELECT 
+      b.id,
+      u.name AS customer,
+      b.table_no,
+      b.booking_date,
+      b.start_time,
+      b.end_time,
+      b.people
     FROM bookings b
     JOIN users u ON b.user_id = u.id
     ORDER BY b.booking_date DESC
@@ -11,25 +18,21 @@ export const getBookings = async () => {
   return rows;
 };
 
-export const deleteBooking = id =>
-  db.query("DELETE FROM bookings WHERE id=?", [id]);
+export const cancelBooking = async (id) => {
+  await db.query("DELETE FROM bookings WHERE id = $1", [id]);
+};
 
-export const getUsers = async () => {
-  const {rows} = await db.query(
-    "SELECT id,name,email,role FROM users"
+/* ===== TABLES ===== */
+export const getTables = async () => {
+  const { rows } = await db.query(
+    "SELECT id, table_no, status FROM tables ORDER BY table_no"
   );
   return rows;
 };
 
-export const changeRole = ({ userId, role }) =>
-  db.query("UPDATE users SET role=? WHERE id=?", [role, userId]);
-
-export const deleteUser = id =>
-  db.query("DELETE FROM users WHERE id=?", [id]);
-
-export const getMessages = async () => {
-  const {rows} = await db.query(
-    "SELECT * FROM messages ORDER BY created_at DESC"
+export const updateTableStatus = async (id, status) => {
+  await db.query(
+    "UPDATE tables SET status = $1 WHERE id = $2",
+    [status, id]
   );
-  return rows;
 };
