@@ -37,7 +37,7 @@ app.use("/api/bookings", bookingRoutes);
 
 // SPA fallback
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+  res.sendFile(path.join(__dirname, "../public/user.html"));
 });
 
 export default app;
