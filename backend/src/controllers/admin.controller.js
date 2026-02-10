@@ -1,34 +1,28 @@
-import db from "../config/db.js";
+import * as admin from "../services/admin.service.js";
 
-/* ALL BOOKINGS */
+/* ===== BOOKINGS ===== */
 export const getAllBookings = async (req, res) => {
-  const { rows } = await db.query(
-    `SELECT b.*, u.name
-     FROM bookings b
-     JOIN users u ON b.user_id=u.id
-     ORDER BY b.created_at DESC`
-  );
-  res.json(rows);
+  const data = await admin.getAllBookings();
+  res.json(data);
 };
 
-/* CANCEL BOOKING */
 export const cancelBooking = async (req, res) => {
-  await db.query(
-    `UPDATE bookings SET status='cancelled' WHERE id=$1`,
-    [req.params.id]
-  );
+  await admin.cancelBooking(req.params.id);
   res.json({ success: true });
 };
 
-/* CLOSE TABLE */
+/* ===== TABLES ===== */
+export const getTables = async (req, res) => {
+  const data = await admin.getTables();
+  res.json(data);
+};
+
+export const openTable = async (req, res) => {
+  await admin.updateTableStatus(req.params.id, "open");
+  res.json({ success: true });
+};
+
 export const closeTable = async (req, res) => {
-  const { table_no, date, reason } = req.body;
-
-  await db.query(
-    `INSERT INTO table_closures (table_no, close_date, reason)
-     VALUES ($1,$2,$3)`,
-    [table_no, date, reason]
-  );
-
+  await admin.updateTableStatus(req.params.id, "closed");
   res.json({ success: true });
 };
