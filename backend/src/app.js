@@ -39,7 +39,7 @@ app.use("/api/promos", promoRoutes);
 
 // SPA fallback
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "../public/user.html"));
+  res.sendFile(path.join(__dirname, "../frontend/user.html"));
 });
 
 export default app;
