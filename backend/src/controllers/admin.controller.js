@@ -41,3 +41,37 @@ export const closeTable = async (req, res) => {
   await admin.updateTableStatus(req.params.id, "closed");
   res.json({ success: true });
 };
+
+/* ===== USERS ===== */
+export const getAllUsers = async (req, res) => {
+  const data = await admin.getUsers();
+  res.json(data);
+};
+
+export const removeUser = async (req, res) => {
+  await admin.deleteUser(req.params.id);
+  res.json({ success: true });
+};
+
+/* ===== TABLES CLOSE ===== */
+export const closeTableByDate = async (req, res) => {
+  const { table_no, date } = req.body;
+  await admin.closeTable(table_no, date);
+  res.json({ success: true });
+};
+
+export const openTableByDate = async (req, res) => {
+  const { table_no, date } = req.body;
+  await admin.openTable(table_no, date);
+  res.json({ success: true });
+};
+/* ===== MESSAGES ===== */
+export const getAllMessages = async (req, res) => {
+  const data = await admin.getMessages();
+  res.json(data);
+};
+
+export const sendReply = async (req, res) => {
+  await admin.replyMessage(req.params.id, req.body.reply);
+  res.json({ success: true });
+};
