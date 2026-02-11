@@ -56,8 +56,9 @@ async function loadBookings() {
   data.forEach(b => {
     tbody.innerHTML += `
       <tr>
-        <td>${b.booking_date}</td>
-        <td>${b.start_time} - ${b.end_time}</td>
+         <td>${b.book_date}</td>
+        <td>${b.book_time ?? "-"}</td>
+        <td>${b.status}</td>
         <td>${b.table_no}</td>
         <td>${b.customer}</td>
         <td>${b.people}</td>
