@@ -12,64 +12,82 @@
   <div class="nav">
     <div class="logo">Bourbon.Yard | Admin</div>
     <div class="menu">
-      <span id="username"></span>
+      <span id="username" class="username"></span>
       <button id="logout" class="btn-outline">ออกจากระบบ</button>
     </div>
   </div>
 </header>
 
-<main class="container">
+<main class="admin-container">
 
-  <!-- ===== CLOSE / OPEN TABLE ===== -->
-  <section class="card">
-    <h2>จัดการโต๊ะ (ปิดทั้งวัน)</h2>
+  <!-- LEFT COLUMN -->
+  <div class="left-column">
 
-    <input type="date" id="closeDate">
-    <input type="number" id="tableNo" placeholder="หมายเลขโต๊ะ">
+    <!-- ===== CLOSE / OPEN TABLE ===== -->
+    <section class="card">
+      <h2>จัดการโต๊ะ (ปิดทั้งวัน)</h2>
 
-    <button id="closeTableBtn">ปิดโต๊ะ</button>
-    <button id="openTableBtn" class="btn-outline">เปิดโต๊ะ</button>
-  </section>
+      <div class="form-row">
+        <input type="date" id="closeDate">
+        <input type="number" id="tableNo" placeholder="หมายเลขโต๊ะ">
+      </div>
 
-  <!-- ===== BOOKINGS ===== -->
-  <section class="card">
-    <h2>การจองทั้งหมด</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>วันที่</th>
-          <th>เวลา</th>
-          <th>โต๊ะ</th>
-          <th>ผู้ใช้</th>
-          <th>สถานะ</th>
-          <th>จำนวนคน</th>
-          <th>จัดการ</th>
-        </tr>
-      </thead>
-      <tbody id="bookingTable"></tbody>
-    </table>
-  </section>
+      <div class="btn-group">
+        <button id="closeTableBtn" class="btn-danger">ปิดโต๊ะ</button>
+        <button id="openTableBtn" class="btn-success">เปิดโต๊ะ</button>
+      </div>
+    </section>
 
-  <!-- ===== USERS ===== -->
-  <section class="card">
-    <h2>ผู้ใช้งาน</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>ชื่อ</th>
-          <th>Email</th>
-          <th>Admin</th>
-        </tr>
-      </thead>
-      <tbody id="userTable"></tbody>
-    </table>
-  </section>
+    <!-- ===== USERS ===== -->
+    <section class="card">
+      <h2>ผู้ใช้งาน</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ชื่อ</th>
+              <th>Email</th>
+              <th>Admin</th>
+            </tr>
+          </thead>
+          <tbody id="userTable"></tbody>
+        </table>
+      </div>
+    </section>
 
-  <!-- ===== MESSAGES ===== -->
-  <section class="card">
-    <h2>ข้อความจากผู้ใช้</h2>
-    <div id="messageList"></div>
-  </section>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-column">
+
+    <!-- ===== BOOKINGS ===== -->
+    <section class="card">
+      <h2>การจองทั้งหมด</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>วันที่</th>
+              <th>เวลา</th>
+              <th>โต๊ะ</th>
+              <th>ผู้ใช้</th>
+              <th>สถานะ</th>
+              <th>จำนวนคน</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="bookingTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== MESSAGES ===== -->
+    <section class="card">
+      <h2>ข้อความจากผู้ใช้</h2>
+      <div id="messageList" class="message-list"></div>
+    </section>
+
+  </div>
 
 </main>
 

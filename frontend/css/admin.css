@@ -1,21 +1,21 @@
-/* ===== RESET ===== */
+/* ===== BASE ===== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 body {
-  background: #f5f6fa;
+  background: #f4f6f9;
   color: #333;
 }
 
 /* ===== HEADER ===== */
 .header {
   background: #111;
-  color: #fff;
-  padding: 14px 30px;
+  color: white;
+  padding: 18px 40px;
 }
 
 .nav {
@@ -25,103 +25,74 @@ body {
 }
 
 .logo {
-  font-size: 18px;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-}
-
-.menu {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-#username {
-  font-size: 14px;
-  opacity: 0.85;
-}
-
-/* ===== BUTTONS ===== */
-button {
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  background: #111;
-  color: #fff;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-button:hover {
-  background: #333;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .btn-outline {
   background: transparent;
-  border: 1px solid #fff;
-  color: #fff;
+  border: 1px solid white;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 .btn-outline:hover {
-  background: #fff;
-  color: #111;
+  background: white;
+  color: black;
 }
 
-/* ===== CONTAINER ===== */
-.container {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 20px;
+/* ===== LAYOUT ===== */
+.admin-container {
+  padding: 40px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 20px;
+  grid-template-columns: 350px 1fr;
+  gap: 30px;
+}
+
+.left-column,
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 /* ===== CARD ===== */
 .card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  background: white;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
 }
 
 .card h2 {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   font-size: 18px;
-  border-left: 4px solid #111;
+  border-left: 4px solid black;
   padding-left: 10px;
 }
 
-/* ===== FORM ===== */
-.card input {
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  margin-right: 6px;
-  margin-bottom: 10px;
-}
-
-.card input:focus {
-  outline: none;
-  border-color: #111;
-}
-
 /* ===== TABLE ===== */
+.table-wrapper {
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
 }
 
 thead {
   background: #111;
-  color: #fff;
+  color: white;
 }
 
 th, td {
   padding: 10px;
-  text-align: left;
+  text-align: center;
+  font-size: 14px;
 }
 
 tbody tr:nth-child(even) {
@@ -132,29 +103,64 @@ tbody tr:hover {
   background: #eaeaea;
 }
 
-/* ===== MESSAGE LIST ===== */
-#messageList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* ===== BUTTONS ===== */
+button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.message {
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-success {
+  background: #2ecc71;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+/* ===== FORM ===== */
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+input:focus {
+  outline: none;
+  border-color: black;
+}
+
+/* ===== MESSAGE LIST ===== */
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message-item {
+  background: #f4f6f9;
   padding: 12px;
   border-radius: 8px;
-  background: #f7f7f7;
-  border-left: 4px solid #111;
   font-size: 14px;
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 600px) {
-  .nav {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  table {
-    font-size: 13px;
+@media (max-width: 1024px) {
+  .admin-container {
+    grid-template-columns: 1fr;
   }
 }
